@@ -57,7 +57,8 @@ class AppState: ObservableObject {
         guard let settings = settings else { return }
         
         if settings.isProtectionRunning {
-            // 如果之前在运行，恢复运行状态
+            // 如果之前在运行，恢复运行状态但不直接触发护眼窗口
+            // 用户启动应用的目的是进入配置窗口，而不是立即进入护眼模式
             isRunning = true
             activityMonitor?.startMonitoring()
             
@@ -70,8 +71,11 @@ class AppState: ObservableObject {
                     // 还在工作时间内，继续计时
                     eyeCareTimer?.resumeFromElapsed(elapsed)
                 } else {
-                    // 已经超过工作时间，应该显示护眼窗口
-                    triggerEyeCare()
+                    // 已经超过工作时间，但不直接显示护眼窗口
+                    // 让用户在配置窗口中看到状态并决定下一步操作
+                    eyeCareTimer?.reset()
+                    settings.lastWorkStartTime = Date()
+                    eyeCareTimer?.start()
                 }
             } else {
                 // 重新开始计时
@@ -91,7 +95,8 @@ class AppState: ObservableObject {
         settings?.isProtectionRunning = true
         settings?.lastWorkStartTime = Date()
         
-        hideConfig()
+        // 不自动隐藏配置窗口，让用户自己决定是否关闭
+        // hideConfig() // 已移除
         
         // 启动活动监控和计时器
         activityMonitor?.startMonitoring()
@@ -112,7 +117,10 @@ class AppState: ObservableObject {
         activityMonitor?.stopMonitoring()
         eyeCareTimer?.stop()
         
-        print("AppState: 护眼保护已停止")
+        // 完全重置计时器状态
+        eyeCareTimer?.reset()
+        
+        print("AppState: 护眼保护已停止，计时器已重置")
     }
 
     func hideConfig() {
@@ -318,6 +326,18 @@ class AppState: ObservableObject {
         if showEyeCare {
             exitFullScreenEyeCareMode()
         }
+        
+        // 完全清除所有状态和计时器
+        stopProtection()
+        
+        // 额外确保计时器完全重置
+        eyeCareTimer?.reset()
+        
+        // 清除所有持久化状态
+        settings?.isProtectionRunning = false
+        settings?.lastWorkStartTime = nil
+        
+        print("AppState: 应用退出前已清除所有状态")
         NSApplication.shared.terminate(nil)
     }
 

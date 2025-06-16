@@ -129,8 +129,8 @@ formatter: NumberFormatter())
         // 启动保护
         appState.startProtection()
 
-        // 隐藏配置窗口
-        appState.closeConfigWindow()
+        // 不自动隐藏配置窗口，让用户自己决定
+        // appState.closeConfigWindow() // 已移除
     }
 
     private func stopProtection() {
