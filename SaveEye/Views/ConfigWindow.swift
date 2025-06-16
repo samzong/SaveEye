@@ -73,9 +73,6 @@ struct ConfigWindow: View {
                         .font(.title2)
                         .fontWeight(.semibold)
                     
-                    // Text("智能护眼助手")
-                    //     .font(.caption)
-                    //     .foregroundColor(.secondary)
                 }
             }
         }
@@ -200,7 +197,6 @@ struct ConfigWindow: View {
     
     private func checkAccessibilityPermission() {
         if !AXIsProcessTrusted() {
-            print("Accessibility permission not granted yet")
         }
     }
     
@@ -215,7 +211,6 @@ struct ConfigWindow: View {
                 // 设置窗口为不可调整大小
                 window.styleMask.remove(.resizable)
                 
-                print("ConfigWindow: 窗口样式已设置 - 禁用最小化和最大化")
             }
         }
     }

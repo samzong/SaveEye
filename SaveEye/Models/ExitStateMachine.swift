@@ -63,7 +63,6 @@ class ExitStateMachine: ObservableObject {
         showMessage = "再按2次ESC键可退出护眼模式"
         startClickTimer()
         
-        print("ExitStateMachine: 第一次ESC - \(showMessage)")
     }
     
     // 第二次ESC按下
@@ -73,7 +72,6 @@ class ExitStateMachine: ObservableObject {
         showMessage = "再按1次ESC键可退出护眼模式"
         restartClickTimer()
         
-        print("ExitStateMachine: 第二次ESC - \(showMessage)")
     }
     
     // 第三次ESC按下（触发退出）
@@ -85,7 +83,6 @@ class ExitStateMachine: ObservableObject {
         timer?.invalidate()
         timer = nil
         
-        print("ExitStateMachine: 第三次ESC - 触发退出")
         
         // 延迟一下让用户看到消息，然后触发退出
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -98,7 +95,6 @@ class ExitStateMachine: ObservableObject {
         // 在延迟状态下按ESC，增加5分钟延迟
         showMessage = "延迟5分钟，继续工作..."
         
-        print("ExitStateMachine: 延迟状态ESC - 增加5分钟延迟")
         
         // 延迟一下让用户看到消息，然后触发延迟
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -127,7 +123,6 @@ class ExitStateMachine: ObservableObject {
         timer?.invalidate()
         timer = nil
         
-        print("ExitStateMachine: 重置到空闲状态")
     }
     
     // 进入延迟请求状态
@@ -143,7 +138,6 @@ class ExitStateMachine: ObservableObject {
             }
         }
         
-        print("ExitStateMachine: 进入延迟状态")
     }
     
     // 强制重置（用于护眼窗口关闭时）
@@ -154,9 +148,7 @@ class ExitStateMachine: ObservableObject {
     // 状态观察器
     private func setupStateObserver() {
         $currentState
-            .sink { state in
-                print("ExitStateMachine: 状态变更为 \(state)")
-            }
+            .sink { _ in }
             .store(in: &cancellables)
     }
     

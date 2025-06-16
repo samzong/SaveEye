@@ -83,8 +83,7 @@ class AppState: ObservableObject {
                 settings.lastWorkStartTime = Date()
             }
             
-            print("AppState: 恢复运行状态，护眼保护已启动")
-        }
+            }
     }
 
     // 应用状态控制
@@ -102,7 +101,6 @@ class AppState: ObservableObject {
         activityMonitor?.startMonitoring()
         eyeCareTimer?.start()
         
-        print("AppState: 护眼保护已启动")
     }
 
     func stopProtection() {
@@ -120,7 +118,6 @@ class AppState: ObservableObject {
         // 完全重置计时器状态
         eyeCareTimer?.reset()
         
-        print("AppState: 护眼保护已停止，计时器已重置")
     }
 
     func hideConfig() {
@@ -152,7 +149,6 @@ class AppState: ObservableObject {
             self.enterFullScreenEyeCareMode()
         }
         
-        print("AppState: 护眼窗口显示，启动ESC监听")
     }
 
     func dismissEyeCare() {
@@ -167,7 +163,6 @@ class AppState: ObservableObject {
         eyeCareTimer?.reset()
         // 重置退出状态机
         exitStateMachine?.forceReset()
-        print("AppState: 护眼窗口关闭，停止ESC监听")
     }
     
     // 进入真正的全屏护眼模式
@@ -178,7 +173,6 @@ class AppState: ObservableObject {
         // 为每个显示器创建真正的全屏窗口
         createFullScreenEyeCareWindows()
         
-        print("AppState: 已进入真正的全屏护眼模式")
     }
     
     // 退出全屏护眼模式
@@ -189,13 +183,11 @@ class AppState: ObservableObject {
         // 恢复正常的系统 UI - 使用安全的设置方法
         setAppPresentationOptions([])
         
-        print("AppState: 已退出全屏护眼模式")
     }
     
     // 创建真正的全屏护眼窗口
     private func createFullScreenEyeCareWindows() {
         let screens = NSScreen.screens
-        print("AppState: 检测到 \(screens.count) 个显示器")
         
         // 清理之前的窗口
         closeAllEyeCareWindows()
@@ -236,7 +228,6 @@ class AppState: ObservableObject {
             // 保存窗口引用
             eyeCareWindows.append(window)
             
-            print("AppState: 在显示器 \(index + 1) 创建全屏护眼窗口 (\(Int(screen.frame.width))x\(Int(screen.frame.height)))")
         }
         
         // 激活应用并确保窗口在最前面
@@ -248,7 +239,6 @@ class AppState: ObservableObject {
             mainWindow.orderFrontRegardless()
         }
         
-        print("AppState: 所有显示器的全屏护眼窗口已创建")
     }
     
     // 延迟休息
@@ -306,14 +296,12 @@ class AppState: ObservableObject {
     
     // 处理退出触发
     private func handleExitTriggered() {
-        print("AppState: 退出状态机触发退出")
         dismissEyeCare()
         exitStateMachine?.forceReset()
     }
     
     // 处理延迟触发
     private func handleDelayTriggered() {
-        print("AppState: 退出状态机触发延迟")
         delayBreak(minutes: 5)
         exitStateMachine?.forceReset()
     }
@@ -335,7 +323,6 @@ class AppState: ObservableObject {
         settings?.isProtectionRunning = false
         settings?.lastWorkStartTime = nil
         
-        print("AppState: 应用退出前已清除所有状态")
         NSApplication.shared.terminate(nil)
     }
 
@@ -344,9 +331,7 @@ class AppState: ObservableObject {
         DispatchQueue.main.async {
             do {
                 NSApp.presentationOptions = options
-                print("AppState: 成功设置呈现选项: \(options)")
             } catch {
-                print("AppState: 设置呈现选项失败: \(error)")
             }
         }
     }
@@ -378,12 +363,10 @@ $0.title.contains("Config") }) {
             window.close()
         }
         
-        print("AppState: 清理了 \(windowCount) 个护眼窗口和 \(swiftUIWindows.count) 个 SwiftUI 窗口")
     }
     
     func ensureEyeCareWindowExists() {
         // 确保护眼窗口存在，如果不存在则尝试创建
-        print("AppState: 检查护眼窗口是否存在")
         
         let hasEyeCareWindow = NSApplication.shared.windows.contains { window in
             window.title.contains("SaveEye Care") || 
@@ -392,11 +375,9 @@ $0.title.contains("Config") }) {
         }
         
         if !hasEyeCareWindow {
-            print("AppState: 护眼窗口不存在，尝试通过环境打开")
             // 尝试通过环境变量或其他方式触发窗口创建
             NSApp.sendAction(#selector(NSApplication.arrangeInFront(_:)), to: nil, from: nil)
         } else {
-            print("AppState: 护眼窗口已存在")
         }
     }
 }

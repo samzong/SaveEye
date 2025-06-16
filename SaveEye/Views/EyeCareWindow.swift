@@ -172,7 +172,6 @@ struct EyeCareWindow: View {
     // MARK: - 私有方法
     
     private func setupEyeCareWindow() {
-        print("EyeCareWindow: 护眼窗口已显示")
     }
     
     private func startEyeCareTimer() {
@@ -199,17 +198,14 @@ struct EyeCareWindow: View {
     
     private func switchScene() {
         currentImageIndex = (currentImageIndex + 1) % sceneryConfigs.count
-        print("EyeCareWindow: 切换到场景 - \(sceneryConfigs[currentImageIndex].name)")
     }
     
     private func delayBreak() {
         appState.delayBreak(minutes: 5)
-        print("EyeCareWindow: 用户选择延迟5分钟")
     }
     
     private func finishBreak() {
         appState.dismissEyeCare()
-        print("EyeCareWindow: 护眼休息结束")
     }
     
     private func cleanupTimers() {
@@ -217,7 +213,6 @@ struct EyeCareWindow: View {
         timer = nil
         sceneTimer?.invalidate()
         sceneTimer = nil
-        print("EyeCareWindow: 所有计时器已清理")
     }
     
     private func formatTime(_ time: TimeInterval) -> String {

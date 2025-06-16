@@ -60,7 +60,6 @@ class EyeCareTimer: ObservableObject {
         }
         timer?.resume()
         
-        print("EyeCareTimer: 计时器已启动，间隔 \(settings.breakIntervalMinutes) 分钟")
     }
     
     // 停止计时
@@ -72,7 +71,6 @@ class EyeCareTimer: ObservableObject {
         timeRemaining = 0
         shouldShowEyeCare = false
         
-        print("EyeCareTimer: 计时器已停止")
     }
     
     // 重置计时器（护眼结束后调用）
@@ -84,7 +82,6 @@ class EyeCareTimer: ObservableObject {
         workDuration = 0
         updateTimerInterval()
         
-        print("EyeCareTimer: 计时器已重置，重新开始工作计时")
     }
     
     // 延迟休息（用户想继续工作时）
@@ -95,7 +92,6 @@ class EyeCareTimer: ObservableObject {
         timeRemaining += delaySeconds
         shouldShowEyeCare = false
         
-        print("EyeCareTimer: 休息延迟 \(minutes) 分钟")
     }
     
     // 从已运行的时间恢复计时器
@@ -115,7 +111,6 @@ class EyeCareTimer: ObservableObject {
         }
         timer?.resume()
         
-        print("EyeCareTimer: 从已运行 \(Int(elapsedSeconds/60)) 分钟恢复计时器")
     }
     
     // 更新计时器间隔
@@ -135,19 +130,12 @@ class EyeCareTimer: ObservableObject {
             workDuration += 1
             timeRemaining = max(0, TimeInterval(settings.breakIntervalMinutes * 60) - workDuration)
             
-            // 调试输出（每10秒输出一次状态）
-            if Int(workDuration) % 10 == 0 {
-                print("EyeCareTimer: 工作中 - 已工作 \(Int(workDuration/60)):\(Int(workDuration.truncatingRemainder(dividingBy: 60))), 剩余 \(formattedTimeRemaining), 距离上次活动 \(String(format: "%.1f", timeSinceLastActivity))秒")
-            }
             
             // 检查是否到达休息时间
             if timeRemaining <= 0 && !shouldShowEyeCare {
                 shouldShowEyeCare = true
-                print("EyeCareTimer: 到达休息时间，触发护眼模式")
             }
         } else {
-            // 无活动，暂停计时
-            print("EyeCareTimer: 暂停计时 - 距离上次活动 \(String(format: "%.1f", timeSinceLastActivity))秒")
         }
     }
     

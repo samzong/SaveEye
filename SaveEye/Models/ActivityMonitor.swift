@@ -53,12 +53,10 @@ class ActivityMonitor: ObservableObject {
 
     func startMonitoring() {
         guard hasPermission else {
-            print("ActivityMonitor: No accessibility permission")
             return
         }
 
         guard !isActive else {
-            print("ActivityMonitor: Already monitoring")
             return
         }
 
@@ -85,7 +83,6 @@ class ActivityMonitor: ObservableObject {
         )
 
         guard let eventTap = eventTap else {
-            print("ActivityMonitor: Failed to create event tap")
             return
         }
 
@@ -96,7 +93,6 @@ class ActivityMonitor: ObservableObject {
         CGEvent.tapEnable(tap: eventTap, enable: true)
 
         isActive = true
-        print("ActivityMonitor: Started monitoring")
     }
 
     func stopMonitoring() {
@@ -107,7 +103,6 @@ class ActivityMonitor: ObservableObject {
         self.eventTap = nil
         isActive = false
 
-        print("ActivityMonitor: Stopped monitoring")
     }
 
     private func recordActivity() {

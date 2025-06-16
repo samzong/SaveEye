@@ -21,7 +21,6 @@ class EscapeKeyMonitor: ObservableObject {
     // 开始监听ESC键
     func startMonitoring() {
         guard !isActive else {
-            print("EscapeKeyMonitor: Already monitoring")
             return
         }
         
@@ -52,7 +51,6 @@ class EscapeKeyMonitor: ObservableObject {
         )
         
         guard let eventTap = eventTap else {
-            print("EscapeKeyMonitor: Failed to create event tap")
             return
         }
         
@@ -63,7 +61,6 @@ class EscapeKeyMonitor: ObservableObject {
         CGEvent.tapEnable(tap: eventTap, enable: true)
         
         isActive = true
-        print("EscapeKeyMonitor: Started monitoring ESC key")
     }
     
     // 停止监听ESC键
@@ -75,6 +72,5 @@ class EscapeKeyMonitor: ObservableObject {
         self.eventTap = nil
         isActive = false
         
-        print("EscapeKeyMonitor: Stopped monitoring ESC key")
     }
 }

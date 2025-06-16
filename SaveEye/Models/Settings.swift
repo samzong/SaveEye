@@ -4,7 +4,6 @@
 //
 //  Created by samzong on 6/16/25.
 //
-// Settings.swift
 import Foundation
 import Combine
 import ServiceManagement
@@ -72,10 +71,8 @@ class Settings: ObservableObject {
                 try SMAppService.mainApp.register()
             } else {
                 // 对于 macOS 12，暂时跳过自启动设置
-                print("Auto start not supported on macOS 12")
             }
         } catch {
-            print("Failed to enable auto start: \(error)")
         }
     }
 
@@ -85,10 +82,8 @@ class Settings: ObservableObject {
                 try SMAppService.mainApp.unregister()
             } else {
                 // 对于 macOS 12，暂时跳过自启动设置
-                print("Auto start not supported on macOS 12")
             }
         } catch {
-            print("Failed to disable auto start: \(error)")
         }
     }
 }
