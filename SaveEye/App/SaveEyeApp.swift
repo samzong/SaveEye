@@ -21,7 +21,7 @@ struct SaveEyeApp: App {
                 .environmentObject(settings)
                 .environmentObject(appState)
                 .environmentObject(activityMonitor)
-                .frame(width: 300, height: 260)
+                .frame(width: 400, height: 332)
                 .onAppear {
                     // 在视图出现时初始化依赖关系
                     appState.initialize(settings: settings, activityMonitor: activityMonitor)
@@ -29,6 +29,7 @@ struct SaveEyeApp: App {
                 }
         }
         .windowStyle(.hiddenTitleBar)
+        .windowResizability(.contentSize)
         
         // 护眼窗口现在通过程序化方式创建，这里保留一个隐藏的窗口作为备用
         WindowGroup("SaveEye Care", id: "eyecare") {
