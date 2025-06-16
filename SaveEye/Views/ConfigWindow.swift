@@ -78,7 +78,7 @@ formatter: NumberFormatter())
                 }
 
                 HStack {
-                    Text("建议: 1-60 分钟 (测试可用更小值)")
+                    Text("休息间隔范围：1-60 分钟")
                         .font(.caption)
                         .foregroundColor(.secondary)
                     Spacer()
@@ -110,7 +110,6 @@ formatter: NumberFormatter())
             }
         }
         .padding(20)
-        .frame(width: 220, height: 260)
         .onAppear {
             // 检查权限
             checkAccessibilityPermission()
