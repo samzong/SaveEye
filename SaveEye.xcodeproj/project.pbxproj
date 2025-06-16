@@ -1,0 +1,575 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		177C99C42DFFBFEE0097CFA0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 177C99AD2DFFBFED0097CFA0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 177C99B42DFFBFED0097CFA0;
+			remoteInfo = SaveEye;
+		};
+		177C99CE2DFFBFEE0097CFA0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 177C99AD2DFFBFED0097CFA0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 177C99B42DFFBFED0097CFA0;
+			remoteInfo = SaveEye;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		177C99B52DFFBFED0097CFA0 /* SaveEye.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SaveEye.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		177C99C32DFFBFEE0097CFA0 /* SaveEyeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaveEyeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		177C99CD2DFFBFEE0097CFA0 /* SaveEyeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaveEyeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		177C99E22DFFC2640097CFA0 /* Exceptions for "SaveEye" folder in "SaveEye" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 177C99B42DFFBFED0097CFA0 /* SaveEye */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		177C99B72DFFBFED0097CFA0 /* SaveEye */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				177C99E22DFFC2640097CFA0 /* Exceptions for "SaveEye" folder in "SaveEye" target */,
+			);
+			path = SaveEye;
+			sourceTree = "<group>";
+		};
+		177C99C62DFFBFEE0097CFA0 /* SaveEyeTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SaveEyeTests;
+			sourceTree = "<group>";
+		};
+		177C99D02DFFBFEE0097CFA0 /* SaveEyeUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SaveEyeUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		177C99B22DFFBFED0097CFA0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		177C99C02DFFBFEE0097CFA0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		177C99CA2DFFBFEE0097CFA0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		177C99AC2DFFBFED0097CFA0 = {
+			isa = PBXGroup;
+			children = (
+				177C99B72DFFBFED0097CFA0 /* SaveEye */,
+				177C99C62DFFBFEE0097CFA0 /* SaveEyeTests */,
+				177C99D02DFFBFEE0097CFA0 /* SaveEyeUITests */,
+				177C99B62DFFBFED0097CFA0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		177C99B62DFFBFED0097CFA0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				177C99B52DFFBFED0097CFA0 /* SaveEye.app */,
+				177C99C32DFFBFEE0097CFA0 /* SaveEyeTests.xctest */,
+				177C99CD2DFFBFEE0097CFA0 /* SaveEyeUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		177C99B42DFFBFED0097CFA0 /* SaveEye */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 177C99D72DFFBFEE0097CFA0 /* Build configuration list for PBXNativeTarget "SaveEye" */;
+			buildPhases = (
+				177C99B12DFFBFED0097CFA0 /* Sources */,
+				177C99B22DFFBFED0097CFA0 /* Frameworks */,
+				177C99B32DFFBFED0097CFA0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				177C99B72DFFBFED0097CFA0 /* SaveEye */,
+			);
+			name = SaveEye;
+			packageProductDependencies = (
+			);
+			productName = SaveEye;
+			productReference = 177C99B52DFFBFED0097CFA0 /* SaveEye.app */;
+			productType = "com.apple.product-type.application";
+		};
+		177C99C22DFFBFEE0097CFA0 /* SaveEyeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 177C99DA2DFFBFEE0097CFA0 /* Build configuration list for PBXNativeTarget "SaveEyeTests" */;
+			buildPhases = (
+				177C99BF2DFFBFEE0097CFA0 /* Sources */,
+				177C99C02DFFBFEE0097CFA0 /* Frameworks */,
+				177C99C12DFFBFEE0097CFA0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				177C99C52DFFBFEE0097CFA0 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				177C99C62DFFBFEE0097CFA0 /* SaveEyeTests */,
+			);
+			name = SaveEyeTests;
+			packageProductDependencies = (
+			);
+			productName = SaveEyeTests;
+			productReference = 177C99C32DFFBFEE0097CFA0 /* SaveEyeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		177C99CC2DFFBFEE0097CFA0 /* SaveEyeUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 177C99DD2DFFBFEE0097CFA0 /* Build configuration list for PBXNativeTarget "SaveEyeUITests" */;
+			buildPhases = (
+				177C99C92DFFBFEE0097CFA0 /* Sources */,
+				177C99CA2DFFBFEE0097CFA0 /* Frameworks */,
+				177C99CB2DFFBFEE0097CFA0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				177C99CF2DFFBFEE0097CFA0 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				177C99D02DFFBFEE0097CFA0 /* SaveEyeUITests */,
+			);
+			name = SaveEyeUITests;
+			packageProductDependencies = (
+			);
+			productName = SaveEyeUITests;
+			productReference = 177C99CD2DFFBFEE0097CFA0 /* SaveEyeUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		177C99AD2DFFBFED0097CFA0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					177C99B42DFFBFED0097CFA0 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					177C99C22DFFBFEE0097CFA0 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 177C99B42DFFBFED0097CFA0;
+					};
+					177C99CC2DFFBFEE0097CFA0 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 177C99B42DFFBFED0097CFA0;
+					};
+				};
+			};
+			buildConfigurationList = 177C99B02DFFBFED0097CFA0 /* Build configuration list for PBXProject "SaveEye" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 177C99AC2DFFBFED0097CFA0;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 177C99B62DFFBFED0097CFA0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				177C99B42DFFBFED0097CFA0 /* SaveEye */,
+				177C99C22DFFBFEE0097CFA0 /* SaveEyeTests */,
+				177C99CC2DFFBFEE0097CFA0 /* SaveEyeUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		177C99B32DFFBFED0097CFA0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		177C99C12DFFBFEE0097CFA0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		177C99CB2DFFBFEE0097CFA0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		177C99B12DFFBFED0097CFA0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		177C99BF2DFFBFEE0097CFA0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		177C99C92DFFBFEE0097CFA0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		177C99C52DFFBFEE0097CFA0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 177C99B42DFFBFED0097CFA0 /* SaveEye */;
+			targetProxy = 177C99C42DFFBFEE0097CFA0 /* PBXContainerItemProxy */;
+		};
+		177C99CF2DFFBFEE0097CFA0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 177C99B42DFFBFED0097CFA0 /* SaveEye */;
+			targetProxy = 177C99CE2DFFBFEE0097CFA0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		177C99D52DFFBFEE0097CFA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = DUPETW8BMH;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		177C99D62DFFBFEE0097CFA0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = DUPETW8BMH;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		177C99D82DFFBFEE0097CFA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SaveEye/SaveEye.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DUPETW8BMH;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SaveEye/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seimo.SaveEye;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		177C99D92DFFBFEE0097CFA0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SaveEye/SaveEye.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DUPETW8BMH;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SaveEye/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seimo.SaveEye;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		177C99DB2DFFBFEE0097CFA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DUPETW8BMH;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seimo.SaveEyeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SaveEye.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SaveEye";
+			};
+			name = Debug;
+		};
+		177C99DC2DFFBFEE0097CFA0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DUPETW8BMH;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seimo.SaveEyeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SaveEye.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SaveEye";
+			};
+			name = Release;
+		};
+		177C99DE2DFFBFEE0097CFA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DUPETW8BMH;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seimo.SaveEyeUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = SaveEye;
+			};
+			name = Debug;
+		};
+		177C99DF2DFFBFEE0097CFA0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DUPETW8BMH;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seimo.SaveEyeUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = SaveEye;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		177C99B02DFFBFED0097CFA0 /* Build configuration list for PBXProject "SaveEye" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				177C99D52DFFBFEE0097CFA0 /* Debug */,
+				177C99D62DFFBFEE0097CFA0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		177C99D72DFFBFEE0097CFA0 /* Build configuration list for PBXNativeTarget "SaveEye" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				177C99D82DFFBFEE0097CFA0 /* Debug */,
+				177C99D92DFFBFEE0097CFA0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		177C99DA2DFFBFEE0097CFA0 /* Build configuration list for PBXNativeTarget "SaveEyeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				177C99DB2DFFBFEE0097CFA0 /* Debug */,
+				177C99DC2DFFBFEE0097CFA0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		177C99DD2DFFBFEE0097CFA0 /* Build configuration list for PBXNativeTarget "SaveEyeUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				177C99DE2DFFBFEE0097CFA0 /* Debug */,
+				177C99DF2DFFBFEE0097CFA0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 177C99AD2DFFBFED0097CFA0 /* Project object */;
+}
