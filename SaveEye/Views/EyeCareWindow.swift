@@ -20,7 +20,7 @@ struct SceneryConfig {
 struct EyeCareWindow: View {
     @EnvironmentObject var appState: AppState
     @State private var currentImageIndex = 0
-    @State private var remainingTime: TimeInterval = 20 // 20秒护眼时间
+    @State private var remainingTime: TimeInterval = 0 // 护眼时间从设置中获取
     @State private var timer: Timer?
     @State private var breathingScale: CGFloat = 1.0
     @State private var sceneTimer: Timer?
@@ -172,6 +172,8 @@ struct EyeCareWindow: View {
     // MARK: - 私有方法
     
     private func setupEyeCareWindow() {
+        // 从设置中获取休息时间
+        remainingTime = TimeInterval(appState.settings?.restDurationSeconds ?? 20)
     }
     
     private func startEyeCareTimer() {
@@ -201,7 +203,8 @@ struct EyeCareWindow: View {
     }
     
     private func delayBreak() {
-        appState.delayBreak(minutes: 5)
+        let delayMinutes = appState.settings?.delayDurationMinutes ?? 5
+        appState.delayBreak(minutes: delayMinutes)
     }
     
     private func finishBreak() {

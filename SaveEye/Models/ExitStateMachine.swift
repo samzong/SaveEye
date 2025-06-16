@@ -17,6 +17,7 @@ class ExitStateMachine: ObservableObject {
     
     private var timer: Timer?
     private var cancellables = Set<AnyCancellable>()
+    private weak var settings: Settings?
     
     // 连击时间窗口（秒）
     private let clickWindow: TimeInterval = 2.0
@@ -30,7 +31,8 @@ class ExitStateMachine: ObservableObject {
         case delayRequest   // 延迟请求状态
     }
     
-    init() {
+    init(settings: Settings? = nil) {
+        self.settings = settings
         setupStateObserver()
     }
     
@@ -92,8 +94,8 @@ class ExitStateMachine: ObservableObject {
     
     // 延迟状态下的ESC处理
     private func handleDelayEscape() {
-        // 在延迟状态下按ESC，增加5分钟延迟
-        showMessage = "延迟5分钟，继续工作..."
+        let delayMinutes = settings?.delayDurationMinutes ?? 5
+        showMessage = "延迟\(delayMinutes)分钟，继续工作..."
         
         
         // 延迟一下让用户看到消息，然后触发延迟
@@ -129,7 +131,8 @@ class ExitStateMachine: ObservableObject {
     func enterDelayState() {
         currentState = .delayRequest
         pressCount = 0
-        showMessage = "是否需要延迟休息？按ESC延迟5分钟"
+        let delayMinutes = settings?.delayDurationMinutes ?? 5
+        showMessage = "是否需要延迟休息？按ESC延迟\(delayMinutes)分钟"
         
         // 10秒后自动退出延迟状态
         DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {

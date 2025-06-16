@@ -21,7 +21,7 @@ struct SaveEyeApp: App {
                 .environmentObject(settings)
                 .environmentObject(appState)
                 .environmentObject(activityMonitor)
-                .frame(width: 430, height: 492)
+                .frame(width: 360, height: 622)
                 .onAppear {
                     // 在视图出现时初始化依赖关系
                     appState.initialize(settings: settings, activityMonitor: activityMonitor)

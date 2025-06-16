@@ -23,7 +23,7 @@ class EyeCareTimer: ObservableObject {
         
         // 监听活动时间变化（实时同步）
         activityMonitor.$lastActivityTime
-            .sink { [weak self] _ in
+            .sink { _ in
                 // ActivityMonitor 检测到活动时会自动更新 lastActivityTime
                 // 这里不需要额外处理，updateTimer() 会读取最新值
             }
@@ -85,7 +85,7 @@ class EyeCareTimer: ObservableObject {
     }
     
     // 延迟休息（用户想继续工作时）
-    func delayBreak(minutes: Int = 5) {
+    func delayBreak(minutes: Int) {
         guard isActive else { return }
         
         let delaySeconds = TimeInterval(minutes * 60)

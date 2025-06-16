@@ -15,6 +15,20 @@ class Settings: ObservableObject {
 "breakIntervalMinutes")
         }
     }
+    
+    // 休息时间（秒）
+    @Published var restDurationSeconds: Int {
+        didSet {
+            UserDefaults.standard.set(restDurationSeconds, forKey: "restDurationSeconds")
+        }
+    }
+    
+    // 延迟休息时间（分钟）
+    @Published var delayDurationMinutes: Int {
+        didSet {
+            UserDefaults.standard.set(delayDurationMinutes, forKey: "delayDurationMinutes")
+        }
+    }
 
     @Published var autoStart: Bool {
         didSet {
@@ -44,6 +58,10 @@ class Settings: ObservableObject {
         // 从UserDefaults读取设置，默认值：20分钟，开启自启动
         self.breakIntervalMinutes = UserDefaults.standard.object(forKey:
 "breakIntervalMinutes") as? Int ?? 20
+        // 默认休息时间20秒
+        self.restDurationSeconds = UserDefaults.standard.object(forKey: "restDurationSeconds") as? Int ?? 20
+        // 默认延迟时间5分钟  
+        self.delayDurationMinutes = UserDefaults.standard.object(forKey: "delayDurationMinutes") as? Int ?? 5
         self.autoStart = UserDefaults.standard.object(forKey: "autoStart") as? Bool
  ?? true
         
@@ -53,6 +71,8 @@ class Settings: ObservableObject {
 
         // 确保间隔为正值（方便测试，允许小值）
         if breakIntervalMinutes < 1 { breakIntervalMinutes = 1 }
+        if restDurationSeconds < 5 { restDurationSeconds = 5 }
+        if delayDurationMinutes < 1 { delayDurationMinutes = 1 }
     }
 
     private func updateAutoStart() {

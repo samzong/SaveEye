@@ -19,7 +19,7 @@ class AppState: ObservableObject {
     private var activityMonitor: ActivityMonitor?
     private var exitStateMachine: ExitStateMachine?
     private var escapeKeyMonitor: EscapeKeyMonitor?
-    private var settings: Settings?
+    var settings: Settings?
     private var eyeCareWindows: [NSWindow] = []
     private var cancellables = Set<AnyCancellable>()
     
@@ -28,7 +28,7 @@ class AppState: ObservableObject {
         self.settings = settings
         self.activityMonitor = activityMonitor
         self.eyeCareTimer = EyeCareTimer(settings: settings, activityMonitor: activityMonitor)
-        self.exitStateMachine = ExitStateMachine()
+        self.exitStateMachine = ExitStateMachine(settings: settings)
         self.escapeKeyMonitor = EscapeKeyMonitor()
         
         // 监听计时器状态
@@ -192,7 +192,7 @@ class AppState: ObservableObject {
         // 清理之前的窗口
         closeAllEyeCareWindows()
         
-        for (index, screen) in screens.enumerated() {
+        for (_, screen) in screens.enumerated() {
             let window = NSWindow(
                 contentRect: screen.frame,
                 styleMask: [.borderless],
@@ -242,7 +242,7 @@ class AppState: ObservableObject {
     }
     
     // 延迟休息
-    func delayBreak(minutes: Int = 5) {
+    func delayBreak(minutes: Int) {
         eyeCareTimer?.delayBreak(minutes: minutes)
         showEyeCare = false
     }
@@ -302,7 +302,8 @@ class AppState: ObservableObject {
     
     // 处理延迟触发
     private func handleDelayTriggered() {
-        delayBreak(minutes: 5)
+        let delayMinutes = settings?.delayDurationMinutes ?? 5
+        delayBreak(minutes: delayMinutes)
         exitStateMachine?.forceReset()
     }
 
@@ -332,6 +333,7 @@ class AppState: ObservableObject {
             do {
                 NSApp.presentationOptions = options
             } catch {
+                // Handle potential errors
             }
         }
     }
@@ -348,7 +350,7 @@ $0.title.contains("Config") }) {
     // 清理所有护眼窗口的辅助方法
     
     private func closeAllEyeCareWindows() {
-        let windowCount = eyeCareWindows.count
+        _ = eyeCareWindows.count
         for window in eyeCareWindows {
             window.close()
         }

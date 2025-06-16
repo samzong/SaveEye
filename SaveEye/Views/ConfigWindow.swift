@@ -16,7 +16,7 @@ struct ConfigWindow: View {
     var body: some View {
         VStack(spacing: 24) {
             // 应用头部
-            headerView
+            // headerView
             
             // 主要设置卡片
             VStack(spacing: 20) {
@@ -32,11 +32,23 @@ struct ConfigWindow: View {
                 Divider()
                     .padding(.horizontal, -20)
                 
+                // 休息时间设置
+                restDurationCard
+                
+                Divider()
+                    .padding(.horizontal, -20)
+                
+                // 延迟时间设置
+                delayDurationCard
+                
+                Divider()
+                    .padding(.horizontal, -20)
+                
                 // 开机自启动
                 autoStartCard
             }
             .padding(20)
-            .background(Color(.windowBackgroundColor))
+            // .background(Color(.windowBackgroundColor))
             .cornerRadius(12)
             
             // 底部操作按钮
@@ -56,27 +68,27 @@ struct ConfigWindow: View {
     
     // MARK: - 视图组件
     
-    private var headerView: some View {
-        VStack(spacing: 8) {
-            // 应用图标和名称 - 居中布局
-            VStack(spacing: 8) {
-                // 使用应用的真实logo
-                Image("Logo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 72, height: 72)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+    // private var headerView: some View {
+    //     VStack(spacing: 8) {
+    //         // 应用图标和名称 - 居中布局
+    //         VStack(spacing: 8) {
+    //             // 使用应用的真实logo
+    //             Image("Logo")
+    //                 .resizable()
+    //                 .aspectRatio(contentMode: .fit)
+    //                 .frame(width: 72, height: 72)
+    //                 .clipShape(RoundedRectangle(cornerRadius: 12))
+    //                 .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
                 
-                VStack(spacing: 2) {
-                    Text("SaveEye")
-                        .font(.title2)
-                        .fontWeight(.semibold)
+    //             VStack(spacing: 2) {
+    //                 Text("SaveEye")
+    //                     .font(.title2)
+    //                     .fontWeight(.semibold)
                     
-                }
-            }
-        }
-    }
+    //             }
+    //         }
+    //     }
+    // }
     
     private var protectionToggleCard: some View {
         HStack(spacing: 16) {
@@ -156,6 +168,100 @@ struct ConfigWindow: View {
             
             // 建议文案
             Text("建议设置为 20-30 分钟，有效缓解眼部疲劳")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.top, 4)
+        }
+    }
+    
+    private var restDurationCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("休息时间")
+                .font(.headline)
+            
+            HStack {
+                Slider(
+                    value: Binding(
+                        get: { Double(settings.restDurationSeconds) },
+                        set: { settings.restDurationSeconds = Int($0) }
+                    ),
+                    in: 10...60,
+                    step: 5
+                ) {
+                    Text("休息时间")
+                } minimumValueLabel: {
+                    Text("10")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                } maximumValueLabel: {
+                    Text("60")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                .accentColor(.blue)
+                
+                // 当前值显示
+                VStack {
+                    Text("\(settings.restDurationSeconds)")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .frame(minWidth: 40)
+                    
+                    Text("秒")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            
+            // 建议文案
+            Text("建议设置为 20-60 秒，让眼部得到充分休息")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.top, 4)
+        }
+    }
+    
+    private var delayDurationCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("延迟时间")
+                .font(.headline)
+            
+            HStack {
+                                 Slider(
+                     value: Binding(
+                         get: { Double(settings.delayDurationMinutes) },
+                         set: { settings.delayDurationMinutes = Int($0) }
+                     ),
+                     in: 1...10,
+                     step: 1
+                ) {
+                    Text("延迟时间")
+                } minimumValueLabel: {
+                    Text("1")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                } maximumValueLabel: {
+                    Text("10")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                .accentColor(.blue)
+                
+                // 当前值显示
+                VStack {
+                    Text("\(settings.delayDurationMinutes)")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .frame(minWidth: 40)
+                    
+                    Text("分钟")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            
+            // 建议文案
+            Text("建议设置为 1-10 分钟，有效缓解眼部疲劳")
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .padding(.top, 4)

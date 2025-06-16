@@ -33,7 +33,7 @@ class EscapeKeyMonitor: ObservableObject {
             options: .listenOnly,
             eventsOfInterest: CGEventMask(eventMask),
             callback: { proxy, type, event, refcon in
-                guard let refcon = refcon else { return Unmanaged.passUnretained(event) }
+                guard refcon != nil else { return Unmanaged.passUnretained(event) }
                 
                 // 检查ESC键按下
                 if type == .keyDown {
