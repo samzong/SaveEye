@@ -60,23 +60,22 @@ struct ConfigWindow: View {
         VStack(spacing: 8) {
             // 应用图标和名称 - 居中布局
             VStack(spacing: 8) {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.blue)
-                    .frame(width: 48, height: 48)
-                    .overlay(
-                        Image(systemName: "eye.fill")
-                            .foregroundColor(.white)
-                            .font(.title2)
-                    )
+                // 使用应用的真实logo
+                Image("Logo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 72, height: 72)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
                 
                 VStack(spacing: 2) {
                     Text("SaveEye")
                         .font(.title2)
                         .fontWeight(.semibold)
                     
-                    Text("智能护眼助手")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    // Text("智能护眼助手")
+                    //     .font(.caption)
+                    //     .foregroundColor(.secondary)
                 }
             }
         }
