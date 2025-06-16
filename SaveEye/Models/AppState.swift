@@ -266,9 +266,7 @@ class AppState: ObservableObject {
         return eyeCareTimer?.formattedTimeRemaining ?? "00:00"
     }
     
-    var workProgress: Double {
-        return eyeCareTimer?.workProgress ?? 0.0
-    }
+
     
     // 处理ESC按键
     func handleEscapeKey() {

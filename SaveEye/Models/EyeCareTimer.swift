@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import Dispatch
 
 // 护眼计时器 - 管理工作时间和休息提醒
 class EyeCareTimer: ObservableObject {
@@ -8,7 +9,7 @@ class EyeCareTimer: ObservableObject {
     @Published var workDuration: TimeInterval = 0
     @Published var shouldShowEyeCare = false
     
-    private var timer: Timer?
+    private var timer: DispatchSourceTimer?
     private var settings: Settings
     private var activityMonitor: ActivityMonitor
     private var cancellables = Set<AnyCancellable>()
@@ -51,17 +52,20 @@ class EyeCareTimer: ObservableObject {
         updateTimerInterval()
         shouldShowEyeCare = false
         
-        // 每秒更新一次
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+        // 使用 DispatchSourceTimer 替代 Timer，提高性能
+        timer = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
+        timer?.schedule(deadline: .now(), repeating: 1.0)
+        timer?.setEventHandler { [weak self] in
             self?.updateTimer()
         }
+        timer?.resume()
         
         print("EyeCareTimer: 计时器已启动，间隔 \(settings.breakIntervalMinutes) 分钟")
     }
     
     // 停止计时
     func stop() {
-        timer?.invalidate()
+        timer?.cancel()
         timer = nil
         isActive = false
         workDuration = 0
@@ -103,10 +107,13 @@ class EyeCareTimer: ObservableObject {
         updateTimerInterval()
         shouldShowEyeCare = false
         
-        // 每秒更新一次
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+        // 使用 DispatchSourceTimer 替代 Timer，提高性能
+        timer = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
+        timer?.schedule(deadline: .now(), repeating: 1.0)
+        timer?.setEventHandler { [weak self] in
             self?.updateTimer()
         }
+        timer?.resume()
         
         print("EyeCareTimer: 从已运行 \(Int(elapsedSeconds/60)) 分钟恢复计时器")
     }
@@ -157,11 +164,7 @@ class EyeCareTimer: ObservableObject {
         return String(format: "%02d:%02d", minutes, seconds)
     }
     
-    // 工作进度百分比
-    var workProgress: Double {
-        let totalInterval = TimeInterval(settings.breakIntervalMinutes * 60)
-        return min(1.0, workDuration / totalInterval)
-    }
+
     
     // 计时器状态描述
     var statusDescription: String {

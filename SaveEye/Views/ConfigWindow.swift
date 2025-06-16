@@ -41,21 +41,14 @@ struct ConfigWindow: View {
                 }
                 
                 if appState.isRunning {
-                    VStack(spacing: 4) {
-                        HStack {
-                            Text("状态:")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                            Text(appState.timerStatus)
-                                .font(.caption)
-                                .foregroundColor(.primary)
-                            Spacer()
-                        }
-                        
-                        // 进度条
-                        ProgressView(value: appState.workProgress)
-                            .progressViewStyle(LinearProgressViewStyle())
-                            .scaleEffect(x: 1, y: 0.5)
+                    HStack {
+                        Text("状态:")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Text(appState.timerStatus)
+                            .font(.caption)
+                            .foregroundColor(.primary)
+                        Spacer()
                     }
                 }
             }
