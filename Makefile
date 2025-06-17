@@ -12,11 +12,6 @@ APP_NAME = $(PROJECT_NAME).app
 BUILT_APP_PATH = $(BUILD_DIR)/$(CONFIGURATION)/$(APP_NAME)
 INSTALL_PATH = /Applications/$(APP_NAME)
 
-# 默认目标
-.PHONY: all build install-app clean help
-
-all: build
-
 # 构建应用
 build:
 	@echo "🔨 构建 $(PROJECT_NAME) 应用..."
@@ -71,3 +66,5 @@ help:
 	@echo ""
 	@echo "🚀 快速开始："
 	@echo "  make install-app  # 一键构建并安装" 
+
+.DEFAULT_GOAL := help
