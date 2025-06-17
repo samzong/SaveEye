@@ -30,15 +30,5 @@ struct SaveEyeApp: App {
         }
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
-        
-        // 护眼窗口现在通过程序化方式创建，这里保留一个隐藏的窗口作为备用
-        WindowGroup("SaveEye Care", id: "eyecare") {
-            // 空的占位符视图，实际护眼窗口通过 AppState 程序化创建
-            Rectangle()
-                .fill(Color.clear)
-                .frame(width: 1, height: 1)
-                .opacity(0)
-        }
-        .windowStyle(.hiddenTitleBar)
     }
 }
