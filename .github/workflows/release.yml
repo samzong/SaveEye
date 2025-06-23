@@ -72,11 +72,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
-    - name: Update latest tag
-      run: |
-        git tag -f latest
-        git push -f origin latest
-        
     - name: Trigger Homebrew update
       if: success()
       uses: peter-evans/repository-dispatch@v2
