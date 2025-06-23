@@ -9,8 +9,8 @@ DERIVED_DATA_PATH = $(BUILD_DIR)/DerivedData
 VERSION = $(shell git describe --tags --abbrev=0 2>/dev/null || echo "1.0.0")
 
 # 应用路径
-APP_NAME = $(PROJECT_NAME).app
-BUILT_APP_PATH = $(BUILD_DIR)/$(CONFIGURATION)/$(APP_NAME)
+APP_NAME = $(PROJECT_NAME)
+BUILT_APP_PATH = $(BUILD_DIR)/$(CONFIGURATION)/$(APP_NAME).app
 INSTALL_PATH = /Applications/$(APP_NAME)
 DIST_ZIP = $(BUILD_DIR)/$(CONFIGURATION)/$(PROJECT_NAME)-unsigned.zip
 DMG_DIR = $(BUILD_DIR)/dmg
@@ -45,7 +45,7 @@ build:
 	@echo "🧹 清理扩展属性..."
 	@xattr -cr "$(BUILT_APP_PATH)"
 	@echo "📦 打包分发版本..."
-	@cd "$(BUILD_DIR)/$(CONFIGURATION)" && zip -r "$(PROJECT_NAME)-unsigned.zip" "$(APP_NAME)"
+	@cd "$(BUILD_DIR)/$(CONFIGURATION)" && zip -r "$(PROJECT_NAME)-unsigned.zip" "$(APP_NAME).app"
 	@echo "✅ 构建完成！"
 	@echo "📍 应用位置: $(BUILT_APP_PATH)"
 	@echo "📦 分发包位置: $(DIST_ZIP)"
@@ -67,7 +67,7 @@ build-unsigned:
 	@echo "🧹 清理扩展属性..."
 	@xattr -cr "$(BUILT_APP_PATH)"
 	@echo "📦 打包分发版本..."
-	@cd "$(BUILD_DIR)/$(CONFIGURATION)" && zip -r "$(PROJECT_NAME)-unsigned.zip" "$(APP_NAME)"
+	@cd "$(BUILD_DIR)/$(CONFIGURATION)" && zip -r "$(PROJECT_NAME)-unsigned.zip" "$(APP_NAME).app"
 	@echo "✅ 构建完成！"
 	@echo "📍 应用位置: $(BUILT_APP_PATH)"
 	@echo "📦 分发包位置: $(DIST_ZIP)"
@@ -116,10 +116,8 @@ dmg: build
 	@hdiutil create -volname "$(PROJECT_NAME) $(VERSION)" \
 		-srcfolder $(DMG_DIR) \
 		-ov -format UDZO \
-		"$(DMG_PATH)-x86_64.dmg"
-	@cp "$(DMG_PATH)-x86_64.dmg" "$(DMG_PATH)-arm64.dmg"
+		"$(DMG_PATH)-arm64.dmg"
 	@echo "✅ DMG 创建完成！"
-	@echo "📍 x86_64 DMG: $(DMG_PATH)-x86_64.dmg"
 	@echo "📍 arm64 DMG: $(DMG_PATH)-arm64.dmg"
 
 # 创建 DMG 安装包（无签名版本，用于 CI）
@@ -132,10 +130,8 @@ dmg-unsigned: build-unsigned
 	@hdiutil create -volname "$(PROJECT_NAME) $(VERSION)" \
 		-srcfolder $(DMG_DIR) \
 		-ov -format UDZO \
-		"$(DMG_PATH)-x86_64.dmg"
-	@cp "$(DMG_PATH)-x86_64.dmg" "$(DMG_PATH)-arm64.dmg"
+		"$(DMG_PATH)-arm64.dmg"
 	@echo "✅ DMG 创建完成！"
-	@echo "📍 x86_64 DMG: $(DMG_PATH)-x86_64.dmg"
 	@echo "📍 arm64 DMG: $(DMG_PATH)-arm64.dmg"
 
 # 更新 Homebrew Cask
@@ -154,11 +150,9 @@ update-homebrew:
 	@rm -rf tmp && mkdir -p tmp
 	
 	@echo "==> 下载 DMG 文件..."
-	@curl -L -o tmp/$(APP_NAME)-x86_64.dmg "https://github.com/samzong/$(APP_NAME)/releases/download/v$(CLEAN_VERSION)/$(APP_NAME)-$(CLEAN_VERSION)-x86_64.dmg"
 	@curl -L -o tmp/$(APP_NAME)-arm64.dmg "https://github.com/samzong/$(APP_NAME)/releases/download/v$(CLEAN_VERSION)/$(APP_NAME)-$(CLEAN_VERSION)-arm64.dmg"
 	
 	@echo "==> 计算 SHA256 校验和..."
-	@X86_64_SHA256=$$(shasum -a 256 tmp/$(APP_NAME)-x86_64.dmg | cut -d ' ' -f 1) && echo "    - x86_64 SHA256: $$X86_64_SHA256"
 	@ARM64_SHA256=$$(shasum -a 256 tmp/$(APP_NAME)-arm64.dmg | cut -d ' ' -f 1) && echo "    - arm64 SHA256: $$ARM64_SHA256"
 	
 	@echo "==> 克隆 Homebrew tap 仓库..."
@@ -166,9 +160,8 @@ update-homebrew:
 	@cd tmp/$(HOMEBREW_TAP_REPO) && echo "    - 创建新分支: $(BRANCH_NAME)" && git checkout -b $(BRANCH_NAME)
 
 	@echo "==> 更新 cask 文件..."
-	@X86_64_SHA256=$$(shasum -a 256 tmp/$(APP_NAME)-x86_64.dmg | cut -d ' ' -f 1) && \
-	ARM64_SHA256=$$(shasum -a 256 tmp/$(APP_NAME)-arm64.dmg | cut -d ' ' -f 1) && \
-	echo "==> 再次确认SHA256: x86_64=$$X86_64_SHA256, arm64=$$ARM64_SHA256" && \
+	@ARM64_SHA256=$$(shasum -a 256 tmp/$(APP_NAME)-arm64.dmg | cut -d ' ' -f 1) && \
+	echo "==> 再次确认SHA256: arm64=$$ARM64_SHA256" && \
 	cd tmp/$(HOMEBREW_TAP_REPO) && \
 	echo "==> 当前目录: $$(pwd)" && \
 	echo "==> CASK_FILE路径: $(CASK_FILE)" && \
@@ -186,8 +179,6 @@ update-homebrew:
 			sed -i '' "/on_intel/,/end/ s/sha256 \\\".*\\\"/sha256 \\\"$$X86_64_SHA256\\\"/g" $(CASK_FILE); \
 			echo "    - 更新ARM下载URL..."; \
 			sed -i '' "s|url \\\".*v#{version}/.*-ARM64.dmg\\\"|url \\\"https://github.com/samzong/$(APP_NAME)/releases/download/v#{version}/$(APP_NAME)-$(CLEAN_VERSION)-arm64.dmg\\\"|g" $(CASK_FILE); \
-			echo "    - 更新Intel下载URL..."; \
-			sed -i '' "s|url \\\".*v#{version}/.*-Intel.dmg\\\"|url \\\"https://github.com/samzong/$(APP_NAME)/releases/download/v#{version}/$(APP_NAME)-$(CLEAN_VERSION)-x86_64.dmg\\\"|g" $(CASK_FILE); \
 			echo "    - 最终cask文件内容:"; \
 			cat $(CASK_FILE); \
 		else \
@@ -205,8 +196,6 @@ update-homebrew:
 		echo '    url "https://github.com/samzong/$(APP_NAME)/releases/download/v#{version}/$(APP_NAME)-arm64.dmg"' >> $(CASK_FILE); \
 		echo '    sha256 "'$$ARM64_SHA256'"' >> $(CASK_FILE); \
 		echo '  else' >> $(CASK_FILE); \
-		echo '    url "https://github.com/samzong/$(APP_NAME)/releases/download/v#{version}/$(APP_NAME)-x86_64.dmg"' >> $(CASK_FILE); \
-		echo '    sha256 "'$$X86_64_SHA256'"' >> $(CASK_FILE); \
 		echo '  end' >> $(CASK_FILE); \
 		echo '' >> $(CASK_FILE); \
 		echo '  name "$(APP_NAME)"' >> $(CASK_FILE); \
@@ -255,8 +244,8 @@ help:
 	@echo "  make build           - 构建 SaveEye 应用 (开发者签名版本)"
 	@echo "  make build-unsigned  - 构建应用 (无签名版本，用于 CI/发布)"
 	@echo "  make install-app     - 构建并安装应用到 /Applications"
-	@echo "  make dmg             - 创建 DMG 安装包 (开发者签名版本)"
-	@echo "  make dmg-unsigned    - 创建 DMG 安装包 (无签名版本，用于发布)"
+	@echo "  make dmg             - 创建 arm64 DMG 安装包 (开发者签名版本)"
+	@echo "  make dmg-unsigned    - 创建 arm64 DMG 安装包 (无签名版本，用于发布)"
 	@echo "  make update-homebrew - 更新 Homebrew Cask (暂时不可用)"
 	@echo "  make version         - 更新版本号 (需要 VERSION 参数)"
 	@echo "  make clean           - 清理构建文件"
@@ -266,7 +255,7 @@ help:
 	@echo "  • install-app 需要管理员权限 (sudo)"
 	@echo "  • 安装前会自动删除已存在的旧版本"
 	@echo "  • 构建文件存储在 ./build 目录中"
-	@echo "  • DMG 包会为 x86_64 和 arm64 架构创建"
+	@echo "  • DMG 包仅支持 arm64 架构 (Apple Silicon)"
 	@echo ""
 	@echo "🚀 快速开始："
 	@echo "  make install-app          # 一键构建并安装 (本地使用)"
