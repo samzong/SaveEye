@@ -210,6 +210,15 @@ class AppState: ObservableObject {
     func delayBreak(minutes: Int) {
         eyeCareTimer?.delayBreak(minutes: minutes)
         showEyeCare = false
+        
+        // 停止ESC键监听
+        escapeKeyMonitor?.stopMonitoring()
+        
+        // 退出全屏模式
+        exitFullScreenEyeCareMode()
+        
+        // 重置退出状态机
+        exitStateMachine?.forceReset()
     }
 
     // 获取计时器状态信息
@@ -237,11 +246,7 @@ class AppState: ObservableObject {
 
     // 设置退出状态机通知
     private func setupExitStateMachineNotifications() {
-        NotificationCenter.default.publisher(for: .exitStateMachineDidTriggerExit)
-            .sink { [weak self] _ in
-                self?.handleExitTriggered()
-            }
-            .store(in: &cancellables)
+
 
         NotificationCenter.default.publisher(for: .exitStateMachineDidTriggerDelay)
             .sink { [weak self] _ in
@@ -257,11 +262,7 @@ class AppState: ObservableObject {
             .store(in: &cancellables)
     }
 
-    // 处理退出触发
-    private func handleExitTriggered() {
-        dismissEyeCare()
-        exitStateMachine?.forceReset()
-    }
+
 
     // 处理延迟触发
     private func handleDelayTriggered() {

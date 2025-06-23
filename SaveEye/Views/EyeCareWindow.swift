@@ -118,9 +118,7 @@ struct EyeCareWindow: View {
         .onDisappear {
             cleanupTimers()
         }
-        .onReceive(NotificationCenter.default.publisher(for: .exitStateMachineDidTriggerExit)) { _ in
-            finishBreak()
-        }
+
         .onReceive(NotificationCenter.default.publisher(for: .exitStateMachineDidTriggerDelay)) { _ in
             delayBreak()
         }

@@ -69,13 +69,14 @@ class ExitStateMachine: ObservableObject {
     private func enterThirdPress() {
         currentState = .thirdPress
         pressCount = 3
-        showMessage = "正在退出护眼模式..."
+        let delayMinutes = settings?.delayDurationMinutes ?? 5
+        showMessage = "延迟\(delayMinutes)分钟后继续工作..."
 
         timer?.invalidate()
         timer = nil
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.triggerExit()
+            self.triggerDelay()
         }
     }
 
@@ -130,9 +131,7 @@ class ExitStateMachine: ObservableObject {
             .store(in: &cancellables)
     }
 
-    private func triggerExit() {
-        NotificationCenter.default.post(name: .exitStateMachineDidTriggerExit, object: nil)
-    }
+
 
     private func triggerDelay() {
         NotificationCenter.default.post(name: .exitStateMachineDidTriggerDelay, object: nil)
@@ -160,6 +159,5 @@ class ExitStateMachine: ObservableObject {
 }
 
 extension Notification.Name {
-    static let exitStateMachineDidTriggerExit = Notification.Name("ExitStateMachineDidTriggerExit")
     static let exitStateMachineDidTriggerDelay = Notification.Name("ExitStateMachineDidTriggerDelay")
 }
