@@ -2,9 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- 禁用沙盒以支持无签名分发 -->
 	<key>com.apple.security.app-sandbox</key>
+	<false/>
+	<!-- 允许访问辅助功能 API -->
+	<key>com.apple.security.automation.apple-events</key>
 	<true/>
-	<key>com.apple.security.files.user-selected.read-only</key>
-	<true/>
+	<!-- 允许全局事件监听 -->
+	<key>com.apple.security.temporary-exception.mach-lookup.global-name</key>
+	<string>com.apple.coreservices.launchservicesd</string>
 </dict>
 </plist>
