@@ -24,7 +24,7 @@ jobs:
       
     - name: Build packages
       run: |
-        make dmg VERSION=${{ steps.version.outputs.VERSION }}
+        make dmg-unsigned VERSION=${{ steps.version.outputs.VERSION }}
         
     - name: Verify DMG files
       run: |

@@ -40,6 +40,28 @@ build:
 	@echo "📍 应用位置: $(BUILT_APP_PATH)"
 	@echo "📦 分发包位置: $(DIST_ZIP)"
 
+# 构建应用（无签名版本，用于 CI）
+build-unsigned:
+	@echo "🔨 构建 $(PROJECT_NAME) 应用 (无签名版本)..."
+	@mkdir -p $(BUILD_DIR)
+	xcodebuild \
+		-scheme $(SCHEME) \
+		-configuration $(CONFIGURATION) \
+		-derivedDataPath $(DERIVED_DATA_PATH) \
+		-destination 'platform=macOS' \
+		build \
+		SYMROOT=$(BUILD_DIR) \
+		CODE_SIGN_IDENTITY="" \
+		CODE_SIGNING_REQUIRED=NO \
+		CODE_SIGNING_ALLOWED=NO
+	@echo "🧹 清理扩展属性..."
+	@xattr -cr "$(BUILT_APP_PATH)"
+	@echo "📦 打包分发版本..."
+	@cd "$(BUILD_DIR)/$(CONFIGURATION)" && zip -r "$(PROJECT_NAME)-unsigned.zip" "$(APP_NAME)"
+	@echo "✅ 构建完成！"
+	@echo "📍 应用位置: $(BUILT_APP_PATH)"
+	@echo "📦 分发包位置: $(DIST_ZIP)"
+
 # 安装应用到 /Applications
 install-app: build
 	@echo "📦 安装 $(PROJECT_NAME) 到 /Applications..."
@@ -90,6 +112,22 @@ dmg: build
 	@echo "📍 x86_64 DMG: $(DMG_PATH)-x86_64.dmg"
 	@echo "📍 arm64 DMG: $(DMG_PATH)-arm64.dmg"
 
+# 创建 DMG 安装包（无签名版本，用于 CI）
+dmg-unsigned: build-unsigned
+	@echo "📦 创建 DMG 安装包 (无签名版本)..."
+	@mkdir -p $(DMG_DIR)
+	@cp -R "$(BUILT_APP_PATH)" $(DMG_DIR)/
+	@ln -sf /Applications $(DMG_DIR)/Applications
+	@echo "Creating DMG for $(VERSION)..."
+	@hdiutil create -volname "$(PROJECT_NAME) $(VERSION)" \
+		-srcfolder $(DMG_DIR) \
+		-ov -format UDZO \
+		"$(DMG_PATH)-x86_64.dmg"
+	@cp "$(DMG_PATH)-x86_64.dmg" "$(DMG_PATH)-arm64.dmg"
+	@echo "✅ DMG 创建完成！"
+	@echo "📍 x86_64 DMG: $(DMG_PATH)-x86_64.dmg"
+	@echo "📍 arm64 DMG: $(DMG_PATH)-arm64.dmg"
+
 # 更新 Homebrew Cask
 update-homebrew:
 	@echo "🍺 更新 Homebrew Cask..."
@@ -122,10 +160,12 @@ help:
 	@echo "SaveEye 构建工具使用说明："
 	@echo ""
 	@echo "可用命令："
-	@echo "  make build           - 构建 SaveEye 应用并打包分发版本"
+	@echo "  make build           - 构建 SaveEye 应用 (开发者签名版本)"
+	@echo "  make build-unsigned  - 构建应用 (无签名版本，用于 CI/发布)"
 	@echo "  make install-app     - 构建并安装应用到 /Applications"
-	@echo "  make dmg             - 创建 DMG 安装包"
-	@echo "  make update-homebrew - 更新 Homebrew Cask (需要 VERSION 参数)"
+	@echo "  make dmg             - 创建 DMG 安装包 (开发者签名版本)"
+	@echo "  make dmg-unsigned    - 创建 DMG 安装包 (无签名版本，用于发布)"
+	@echo "  make update-homebrew - 更新 Homebrew Cask (暂时不可用)"
 	@echo "  make version         - 更新版本号 (需要 VERSION 参数)"
 	@echo "  make clean           - 清理构建文件"
 	@echo "  make help            - 显示此帮助信息"
@@ -137,11 +177,11 @@ help:
 	@echo "  • DMG 包会为 x86_64 和 arm64 架构创建"
 	@echo ""
 	@echo "🚀 快速开始："
-	@echo "  make install-app                    # 一键构建并安装"
-	@echo "  make dmg                            # 创建 DMG 包"
-	@echo "  make update-homebrew VERSION=1.1.0 # 更新 Homebrew Cask"
+	@echo "  make install-app          # 一键构建并安装 (本地使用)"
+	@echo "  make dmg-unsigned         # 创建无签名 DMG (用于发布)"
+	@echo "  make version VERSION=1.1.0 # 更新版本号"
 
 # 声明伪目标
-.PHONY: build install-app dmg update-homebrew version clean help
+.PHONY: build build-unsigned install-app dmg dmg-unsigned update-homebrew version clean help
 
 .DEFAULT_GOAL := help
