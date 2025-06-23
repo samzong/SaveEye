@@ -14,6 +14,8 @@ class EyeCareTimer: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     private let inactivityThreshold: TimeInterval = 30
+    private let longInactivityThreshold: TimeInterval = 300 // 5分钟
+    private var wasInactive = false
 
     init(settings: Settings, activityMonitor: ActivityMonitor) {
         self.settings = settings
@@ -43,6 +45,7 @@ class EyeCareTimer: ObservableObject {
 
         isActive = true
         workDuration = 0
+        wasInactive = false
         updateTimerInterval()
         shouldShowEyeCare = false
 
@@ -61,6 +64,7 @@ class EyeCareTimer: ObservableObject {
         workDuration = 0
         timeRemaining = 0
         shouldShowEyeCare = false
+        wasInactive = false
     }
 
     func reset() {
@@ -68,6 +72,7 @@ class EyeCareTimer: ObservableObject {
 
         shouldShowEyeCare = false
         workDuration = 0
+        wasInactive = false
         updateTimerInterval()
     }
 
@@ -102,15 +107,33 @@ class EyeCareTimer: ObservableObject {
 
     private func updateTimer() {
         let timeSinceLastActivity = activityMonitor.timeSinceLastActivity
+        let isCurrentlyActive = timeSinceLastActivity < inactivityThreshold
 
-        if timeSinceLastActivity < inactivityThreshold {
+        if isCurrentlyActive {
+            // 检测从非活动状态转换到活动状态
+            if wasInactive {
+                // 直接使用 timeSinceLastActivity 判断是否超过长时间非活动阈值
+                // 这样可以正确处理系统睡眠的情况
+                if timeSinceLastActivity >= longInactivityThreshold {
+                    workDuration = 0
+                }
+                
+                // 重置非活动状态
+                wasInactive = false
+            }
+            
             workDuration += 1
             timeRemaining = max(0, TimeInterval(settings.breakIntervalMinutes * 60) - workDuration)
 
             if timeRemaining <= 0 && !shouldShowEyeCare {
                 shouldShowEyeCare = true
             }
-        } else {}
+        } else {
+            // 进入非活动状态
+            if !wasInactive {
+                wasInactive = true
+            }
+        }
     }
 
     var formattedTimeRemaining: String {
