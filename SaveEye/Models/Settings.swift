@@ -64,10 +64,6 @@ class Settings: ObservableObject {
 
         isProtectionRunning = UserDefaults.standard.bool(forKey: "isProtectionRunning")
         lastWorkStartTime = UserDefaults.standard.object(forKey: "lastWorkStartTime") as? Date
-
-        if breakIntervalMinutes < 1 { breakIntervalMinutes = 1 }
-        if restDurationSeconds < 5 { restDurationSeconds = 5 }
-        if delayDurationMinutes < 1 { delayDurationMinutes = 1 }
     }
 
     private func updateAutoStart() {

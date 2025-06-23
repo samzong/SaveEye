@@ -46,10 +46,7 @@ class AppState: ObservableObject {
         // 恢复运行状态
         restoreRunningState()
 
-        // 确保护眼窗口在后台创建
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.ensureEyeCareWindowExists()
-        }
+
     }
 
     // 恢复运行状态
@@ -297,7 +294,6 @@ class AppState: ObservableObject {
     }
 
     private func closeAllEyeCareWindows() {
-        _ = eyeCareWindows.count
         for window in eyeCareWindows {
             window.close()
         }
@@ -312,5 +308,5 @@ class AppState: ObservableObject {
         }
     }
 
-    func ensureEyeCareWindowExists() {}
+
 }

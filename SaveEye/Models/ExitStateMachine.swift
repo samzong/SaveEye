@@ -19,6 +19,10 @@ class ExitStateMachine: ObservableObject {
     private weak var settings: Settings?
 
     private let clickWindow: TimeInterval = 2.0
+    
+    private var delayMinutes: Int {
+        return settings?.delayDurationMinutes ?? 5
+    }
 
     enum ExitState {
         case idle
@@ -69,7 +73,6 @@ class ExitStateMachine: ObservableObject {
     private func enterThirdPress() {
         currentState = .thirdPress
         pressCount = 3
-        let delayMinutes = settings?.delayDurationMinutes ?? 5
         showMessage = "延迟\(delayMinutes)分钟后继续工作..."
 
         timer?.invalidate()
@@ -81,7 +84,6 @@ class ExitStateMachine: ObservableObject {
     }
 
     private func handleDelayEscape() {
-        let delayMinutes = settings?.delayDurationMinutes ?? 5
         showMessage = "延迟\(delayMinutes)分钟，继续工作..."
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -111,7 +113,6 @@ class ExitStateMachine: ObservableObject {
     func enterDelayState() {
         currentState = .delayRequest
         pressCount = 0
-        let delayMinutes = settings?.delayDurationMinutes ?? 5
         showMessage = "是否需要延迟休息？按ESC延迟\(delayMinutes)分钟"
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
