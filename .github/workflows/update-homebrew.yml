@@ -13,35 +13,35 @@ on:
     types: [update-homebrew]
 
 jobs:
-  update-homebrew:
+  update-homebrew-tap:
     runs-on: macos-latest
+    if: ${{ github.event_name != 'release' || github.event.release.prerelease != true }}
     
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      
-    - name: Extract version
-      id: version
+    - name: Get release version
+      id: get_version
       run: |
-        if [ "${{ github.event_name }}" = "release" ]; then
-          VERSION=${{ github.event.release.tag_name }}
-          VERSION=${VERSION#v}
-        elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-          VERSION=${{ github.event.inputs.version }}
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
         elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-          VERSION=${{ github.event.client_payload.version }}
+          VERSION_WITH_V=${{ github.event.client_payload.version }}
+          echo "VERSION=${VERSION_WITH_V#v}" >> $GITHUB_ENV
         else
-          echo "Unknown event type"
-          exit 1
+          VERSION_WITH_V=${GITHUB_REF#refs/tags/}
+          echo "VERSION=${VERSION_WITH_V#v}" >> $GITHUB_ENV
         fi
-        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-        echo "Updating to version: $VERSION"
-        
+        echo "Using version: $VERSION"
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install jq
+      run: brew install jq
+
     - name: Update Homebrew Cask
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-        VERSION: ${{ steps.version.outputs.VERSION }}
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        make update-homebrew VERSION=$VERSION
+        GH_PAT: ${{ secrets.GH_PAT }}
+        CI_BUILD: true
+      run: make update-homebrew

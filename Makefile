@@ -130,34 +130,112 @@ dmg-unsigned: build-unsigned
 
 # 更新 Homebrew Cask
 update-homebrew:
-	@echo "🍺 更新 Homebrew Cask..."
-	@if [ -z "$(VERSION)" ]; then \
-		echo "❌ 需要版本号: make update-homebrew VERSION=1.0.0"; \
+	@echo "==> 开始 Homebrew cask 更新流程..."
+	@if [ -z "$(GH_PAT)" ]; then \
+		echo "❌ 错误: 需要设置 GH_PAT 环境变量"; \
 		exit 1; \
 	fi
-	@echo "Downloading DMG files and calculating checksums..."
-	@ARM64_URL="https://github.com/$(GITHUB_USER)/$(GITHUB_REPO)/releases/download/v$(VERSION)/$(PROJECT_NAME)-$(VERSION)-arm64.dmg"; \
-	X86_64_URL="https://github.com/$(GITHUB_USER)/$(GITHUB_REPO)/releases/download/v$(VERSION)/$(PROJECT_NAME)-$(VERSION)-x86_64.dmg"; \
-	ARM64_SHA=$$(curl -sL "$$ARM64_URL" | shasum -a 256 | cut -d' ' -f1); \
-	X86_64_SHA=$$(curl -sL "$$X86_64_URL" | shasum -a 256 | cut -d' ' -f1); \
-	echo "ARM64 SHA256: $$ARM64_SHA"; \
-	echo "X86_64 SHA256: $$X86_64_SHA"; \
-	TEMP_DIR=$$(mktemp -d); \
-	cd "$$TEMP_DIR"; \
-	if [ -n "$(GITHUB_TOKEN)" ]; then \
-		git clone https://$(GITHUB_TOKEN)@github.com/$(GITHUB_USER)/$(HOMEBREW_TAP_REPO).git; \
+
+	@echo "==> 当前版本信息:"
+	@echo "    - VERSION: $(VERSION)"
+	@echo "    - CLEAN_VERSION: $(CLEAN_VERSION)"
+
+	@echo "==> 准备工作目录..."
+	@rm -rf tmp && mkdir -p tmp
+	
+	@echo "==> 下载 DMG 文件..."
+	@curl -L -o tmp/$(APP_NAME)-x86_64.dmg "https://github.com/samzong/$(APP_NAME)/releases/download/v$(CLEAN_VERSION)/$(APP_NAME)-$(CLEAN_VERSION)-x86_64.dmg"
+	@curl -L -o tmp/$(APP_NAME)-arm64.dmg "https://github.com/samzong/$(APP_NAME)/releases/download/v$(CLEAN_VERSION)/$(APP_NAME)-$(CLEAN_VERSION)-arm64.dmg"
+	
+	@echo "==> 计算 SHA256 校验和..."
+	@X86_64_SHA256=$$(shasum -a 256 tmp/$(APP_NAME)-x86_64.dmg | cut -d ' ' -f 1) && echo "    - x86_64 SHA256: $$X86_64_SHA256"
+	@ARM64_SHA256=$$(shasum -a 256 tmp/$(APP_NAME)-arm64.dmg | cut -d ' ' -f 1) && echo "    - arm64 SHA256: $$ARM64_SHA256"
+	
+	@echo "==> 克隆 Homebrew tap 仓库..."
+	@cd tmp && git clone https://$(GH_PAT)@github.com/samzong/$(HOMEBREW_TAP_REPO).git
+	@cd tmp/$(HOMEBREW_TAP_REPO) && echo "    - 创建新分支: $(BRANCH_NAME)" && git checkout -b $(BRANCH_NAME)
+
+	@echo "==> 更新 cask 文件..."
+	@X86_64_SHA256=$$(shasum -a 256 tmp/$(APP_NAME)-x86_64.dmg | cut -d ' ' -f 1) && \
+	ARM64_SHA256=$$(shasum -a 256 tmp/$(APP_NAME)-arm64.dmg | cut -d ' ' -f 1) && \
+	echo "==> 再次确认SHA256: x86_64=$$X86_64_SHA256, arm64=$$ARM64_SHA256" && \
+	cd tmp/$(HOMEBREW_TAP_REPO) && \
+	echo "==> 当前目录: $$(pwd)" && \
+	echo "==> CASK_FILE路径: $(CASK_FILE)" && \
+	if [ -f $(CASK_FILE) ]; then \
+		echo "    - 发现现有cask文件，使用sed更新..."; \
+		echo "    - cask文件内容 (更新前):"; \
+		cat $(CASK_FILE); \
+		sed -i '' "s/version \\\".*\\\"/version \\\"$(CLEAN_VERSION)\\\"/g" $(CASK_FILE); \
+		echo "    - 更新版本后的cask文件:"; \
+		cat $(CASK_FILE); \
+		if grep -q "on_arm" $(CASK_FILE); then \
+			echo "    - 更新ARM架构SHA256..."; \
+			sed -i '' "/on_arm/,/on_intel/ s/sha256 \\\".*\\\"/sha256 \\\"$$ARM64_SHA256\\\"/g" $(CASK_FILE); \
+			echo "    - 更新Intel架构SHA256..."; \
+			sed -i '' "/on_intel/,/end/ s/sha256 \\\".*\\\"/sha256 \\\"$$X86_64_SHA256\\\"/g" $(CASK_FILE); \
+			echo "    - 更新ARM下载URL..."; \
+			sed -i '' "s|url \\\".*v#{version}/.*-ARM64.dmg\\\"|url \\\"https://github.com/samzong/$(APP_NAME)/releases/download/v#{version}/$(APP_NAME)-$(CLEAN_VERSION)-arm64.dmg\\\"|g" $(CASK_FILE); \
+			echo "    - 更新Intel下载URL..."; \
+			sed -i '' "s|url \\\".*v#{version}/.*-Intel.dmg\\\"|url \\\"https://github.com/samzong/$(APP_NAME)/releases/download/v#{version}/$(APP_NAME)-$(CLEAN_VERSION)-x86_64.dmg\\\"|g" $(CASK_FILE); \
+			echo "    - 最终cask文件内容:"; \
+			cat $(CASK_FILE); \
+		else \
+			echo "❌ 未知的 cask 格式，无法更新 SHA256 值"; \
+			exit 1; \
+		fi; \
 	else \
-		git clone https://github.com/$(GITHUB_USER)/$(HOMEBREW_TAP_REPO).git; \
-	fi; \
-	cd $(HOMEBREW_TAP_REPO); \
-	sed -i '' "s/version \".*\"/version \"$(VERSION)\"/" Casks/saveeye.rb; \
-	sed -i '' "s|arm:.*|arm:   \"$$ARM64_SHA\"|" Casks/saveeye.rb; \
-	sed -i '' "s|intel:.*|intel: \"$$X86_64_SHA\"|" Casks/saveeye.rb; \
-	git add Casks/saveeye.rb; \
-	git commit -m "Update SaveEye to version $(VERSION)"; \
-	git push; \
-	rm -rf "$$TEMP_DIR"
-	@echo "✅ Homebrew Cask 更新完成！"
+		echo "    - 未找到cask文件，创建新文件..."; \
+		mkdir -p $$(dirname $(CASK_FILE)); \
+		echo "    - 使用文本方式创建cask文件..."; \
+		echo 'cask "saveeye" do' > $(CASK_FILE); \
+		echo '  version "$(CLEAN_VERSION)"' >> $(CASK_FILE); \
+		echo '' >> $(CASK_FILE); \
+		echo '  if Hardware::CPU.arm?' >> $(CASK_FILE); \
+		echo '    url "https://github.com/samzong/$(APP_NAME)/releases/download/v#{version}/$(APP_NAME)-arm64.dmg"' >> $(CASK_FILE); \
+		echo '    sha256 "'$$ARM64_SHA256'"' >> $(CASK_FILE); \
+		echo '  else' >> $(CASK_FILE); \
+		echo '    url "https://github.com/samzong/$(APP_NAME)/releases/download/v#{version}/$(APP_NAME)-x86_64.dmg"' >> $(CASK_FILE); \
+		echo '    sha256 "'$$X86_64_SHA256'"' >> $(CASK_FILE); \
+		echo '  end' >> $(CASK_FILE); \
+		echo '' >> $(CASK_FILE); \
+		echo '  name "$(APP_NAME)"' >> $(CASK_FILE); \
+		echo '  desc "配置文件管理工具"' >> $(CASK_FILE); \
+		echo '  homepage "https://github.com/samzong/$(APP_NAME)"' >> $(CASK_FILE); \
+		echo '' >> $(CASK_FILE); \
+		echo '  app "$(APP_NAME).app"' >> $(CASK_FILE); \
+		echo 'end' >> $(CASK_FILE); \
+		echo "    - 检查创建的cask文件:"; \
+		cat $(CASK_FILE) || echo "❌ 无法读取cask文件"; \
+	fi
+	
+	@echo "==> 检查更改..."
+	@cd tmp/$(HOMEBREW_TAP_REPO) && \
+	if ! git diff --quiet $(CASK_FILE); then \
+		echo "    - 检测到更改，创建 pull request..."; \
+		git add $(CASK_FILE); \
+		git config user.name "GitHub Actions"; \
+		git config user.email "actions@github.com"; \
+		git commit -m "chore: update $(APP_NAME) to v$(CLEAN_VERSION)"; \
+		git push -u origin $(BRANCH_NAME); \
+		echo "    - 准备创建PR数据..."; \
+		pr_data=$$(printf '{\"title\":\"chore: update %s to v%s\",\"body\":\"Auto-generated PR\\\\n- Version: %s\\\\n- x86_64 SHA256: %s\\\\n- arm64 SHA256: %s\",\"head\":\"%s\",\"base\":\"main\"}' \
+			"$(APP_NAME)" "$(CLEAN_VERSION)" "$(CLEAN_VERSION)" "$$X86_64_SHA256" "$$ARM64_SHA256" "$(BRANCH_NAME)"); \
+		echo "    - PR数据: $$pr_data"; \
+		curl -X POST \
+			-H "Authorization: token $(GH_PAT)" \
+			-H "Content-Type: application/json" \
+			https://api.github.com/repos/samzong/$(HOMEBREW_TAP_REPO)/pulls \
+			-d "$$pr_data"; \
+		echo "✅ Pull request 创建成功"; \
+	else \
+		echo "❌ cask 文件中没有检测到更改"; \
+		exit 1; \
+	fi
+
+	@echo "==> 清理临时文件..."
+	@rm -rf tmp
+	@echo "✅ Homebrew cask 更新流程完成"
 
 # 显示帮助信息
 help:
