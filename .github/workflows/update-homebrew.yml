@@ -1,0 +1,45 @@
+name: Update Homebrew Cask
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to update (without v prefix)'
+        required: true
+        type: string
+  repository_dispatch:
+    types: [update-homebrew]
+
+jobs:
+  update-homebrew:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Extract version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "release" ]; then
+          VERSION=${{ github.event.release.tag_name }}
+          VERSION=${VERSION#v}
+        elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          VERSION=${{ github.event.inputs.version }}
+        elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+          VERSION=${{ github.event.client_payload.version }}
+        else
+          echo "Unknown event type"
+          exit 1
+        fi
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        echo "Updating to version: $VERSION"
+        
+    - name: Update Homebrew Cask
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        VERSION: ${{ steps.version.outputs.VERSION }}
+      run: |
+        make update-homebrew VERSION=$VERSION

@@ -8,119 +8,106 @@
 import AppKit
 import SwiftUI
 
-struct SceneryConfig {
-    let name: String
-    let sfSymbol: String
-    let baseColor: Color
-    let description: String
-}
-
 struct EyeCareWindow: View {
     @EnvironmentObject var appState: AppState
-    @State private var currentImageIndex = 0
     @State private var remainingTime: TimeInterval = 0
     @State private var timer: Timer?
+    @State private var breathingOpacity: Double = 0.8
     @State private var breathingScale: CGFloat = 1.0
-    @State private var sceneTimer: Timer?
-
-    // 远景图像配置
-    private let sceneryConfigs = [
-        SceneryConfig(
-            name: "山景",
-            sfSymbol: "mountain.2.fill",
-            baseColor: Color.blue.opacity(0.4),
-            description: "远山如黛，层峦叠嶂"
-        ),
-        SceneryConfig(
-            name: "森林",
-            sfSymbol: "tree.fill",
-            baseColor: Color.green.opacity(0.4),
-            description: "绿树成荫，生机盎然"
-        ),
-    ]
 
     var body: some View {
         ZStack {
-            LinearGradient(
+            // 护眼友好的深色渐变背景
+            RadialGradient(
                 colors: [
-                    sceneryConfigs[currentImageIndex].baseColor,
-                    Color.black.opacity(0.9),
+                    Color(red: 0.05, green: 0.1, blue: 0.08),
+                    Color(red: 0.02, green: 0.05, blue: 0.04)
                 ],
-                startPoint: .top,
-                endPoint: .bottom
+                center: .center,
+                startRadius: 200,
+                endRadius: 800
             )
             .ignoresSafeArea(.all)
 
-            VStack(spacing: 60) {
-                VStack(spacing: 20) {
-                    Text("护眼休息时间")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
+            VStack(spacing: 120) {
+                // 简洁标题
+                Text("护眼休息")
+                    .font(.system(size: 32, weight: .ultraLight, design: .rounded))
+                    .foregroundColor(.white.opacity(0.9))
+                    .tracking(8)
 
-                    Text("看向远方，放松眼部肌肉")
-                        .font(.title2)
-                        .foregroundColor(.white.opacity(0.9))
-                }
-
-                VStack(spacing: 40) {
-                    Image(systemName: sceneryConfigs[currentImageIndex].sfSymbol)
-                        .font(.system(size: 240))
-                        .foregroundColor(.white.opacity(0.8))
-                        .scaleEffect(breathingScale)
-                        .animation(.easeInOut(duration: 4).repeatForever(autoreverses: true), value: breathingScale)
-
-                    VStack(spacing: 16) {
-                        Text(sceneryConfigs[currentImageIndex].name)
-                            .font(.largeTitle)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.white)
-
-                        Text(sceneryConfigs[currentImageIndex].description)
-                            .font(.title2)
-                            .foregroundColor(.white.opacity(0.8))
-                            .multilineTextAlignment(.center)
+                // 中心呼吸引导区域
+                VStack(spacing: 80) {
+                    // 抽象的视觉引导元素
+                    ZStack {
+                        // 外圈
+                        Circle()
+                            .stroke(Color.green.opacity(0.3), lineWidth: 2)
+                            .frame(width: 280, height: 280)
+                            .scaleEffect(breathingScale * 1.1)
+                            .opacity(breathingOpacity * 0.6)
+                        
+                        // 中圈
+                        Circle()
+                            .stroke(Color.green.opacity(0.5), lineWidth: 1)
+                            .frame(width: 200, height: 200)
+                            .scaleEffect(breathingScale)
+                            .opacity(breathingOpacity * 0.8)
+                        
+                        // 中心点
+                        Circle()
+                            .fill(Color.green.opacity(0.8))
+                            .frame(width: 8, height: 8)
+                            .scaleEffect(breathingScale * 0.8)
+                            .opacity(breathingOpacity)
+                        
+                        // 中心引导文字
+                        Text("注视远方")
+                            .font(.system(size: 18, weight: .light, design: .rounded))
+                            .foregroundColor(.green.opacity(0.9))
+                            .tracking(4)
+                            .offset(y: 60)
                     }
-                }
+                    .animation(.easeInOut(duration: 6).repeatForever(autoreverses: true), value: breathingScale)
+                    .animation(.easeInOut(duration: 6).repeatForever(autoreverses: true), value: breathingOpacity)
 
-                VStack(spacing: 16) {
-                    Text("剩余时间")
-                        .font(.title)
-                        .foregroundColor(.white.opacity(0.7))
-
-                    Text(formatTime(remainingTime))
-                        .font(.system(size: 80, weight: .bold, design: .monospaced))
-                        .foregroundColor(.green)
-                        .shadow(color: .black.opacity(0.3), radius: 4)
+                    // 时间显示
+                    VStack(spacing: 12) {
+                        Text(formatTime(remainingTime))
+                            .font(.system(size: 64, weight: .ultraLight, design: .monospaced))
+                            .foregroundColor(.green.opacity(0.9))
+                            .tracking(2)
+                    }
                 }
             }
 
-            MovingDotGuide()
-                .opacity(0.6)
-
+            // 退出提示消息（右上角）
             VStack {
                 HStack {
                     Spacer()
                     if appState.shouldShowExitMessage {
                         Text(appState.exitStateMessage)
-                            .font(.title2)
-                            .foregroundColor(.yellow)
-                            .padding()
-                            .background(Color.black.opacity(0.6))
-                            .cornerRadius(12)
+                            .font(.system(size: 16, weight: .light, design: .rounded))
+                            .foregroundColor(.yellow.opacity(0.9))
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(Color.black.opacity(0.4))
+                            .cornerRadius(20)
                     }
                 }
-                .padding(.top, 50)
-                .padding(.trailing, 50)
+                .padding(.top, 40)
+                .padding(.trailing, 40)
                 Spacer()
             }
 
+            // 操作提示（底部）
             VStack {
                 Spacer()
-                Text("连按 ESC 键三次退出程序")
-                    .font(.title3)
-                    .foregroundColor(.white.opacity(0.6))
-                    .padding(.bottom, 40)
+                Text("按住 ESC 键退出")
+                    .font(.system(size: 14, weight: .ultraLight, design: .rounded))
+                    .foregroundColor(.white.opacity(0.5))
+                    .tracking(2)
+                    .padding(.bottom, 60)
             }
         }
         .onAppear {
@@ -154,17 +141,9 @@ struct EyeCareWindow: View {
     }
 
     private func startBreathingAnimation() {
-        breathingScale = 1.2
-
-        sceneTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { _ in
-            withAnimation(.easeInOut(duration: 1.5)) {
-                self.switchScene()
-            }
-        }
-    }
-
-    private func switchScene() {
-        currentImageIndex = (currentImageIndex + 1) % sceneryConfigs.count
+        // 启动缓慢的呼吸动画
+        breathingScale = 1.15
+        breathingOpacity = 0.9
     }
 
     private func delayBreak() {
@@ -179,43 +158,11 @@ struct EyeCareWindow: View {
     private func cleanupTimers() {
         timer?.invalidate()
         timer = nil
-        sceneTimer?.invalidate()
-        sceneTimer = nil
     }
 
     private func formatTime(_ time: TimeInterval) -> String {
         let minutes = Int(time) / 60
         let seconds = Int(time) % 60
         return String(format: "%02d:%02d", minutes, seconds)
-    }
-}
-
-struct MovingDotGuide: View {
-    @State private var dotPosition: CGPoint = .init(x: 200, y: 200)
-    @State private var timer: Timer?
-
-    var body: some View {
-        Circle()
-            .fill(Color.white)
-            .frame(width: 16, height: 16)
-            .position(dotPosition)
-            .shadow(color: .black.opacity(0.3), radius: 2)
-            .onAppear {
-                startMovingDot()
-            }
-            .onDisappear {
-                timer?.invalidate()
-            }
-    }
-
-    private func startMovingDot() {
-        timer = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: true) { _ in
-            withAnimation(.easeInOut(duration: 2.5)) {
-                dotPosition = CGPoint(
-                    x: Double.random(in: 150 ... 950),
-                    y: Double.random(in: 150 ... 650)
-                )
-            }
-        }
     }
 }

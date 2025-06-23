@@ -1,0 +1,84 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+        
+    - name: Extract version
+      id: version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+    - name: Build packages
+      run: |
+        make dmg VERSION=${{ steps.version.outputs.VERSION }}
+        
+    - name: Verify DMG files
+      run: |
+        ls -la build/Release/SaveEye-${{ steps.version.outputs.VERSION }}-*.dmg
+        file build/Release/SaveEye-${{ steps.version.outputs.VERSION }}-*.dmg
+        
+    - name: Generate release notes
+      id: release_notes
+      run: |
+        if [ -f CHANGELOG.md ]; then
+          # Extract release notes from CHANGELOG.md
+          awk "/^## \[?${{ steps.version.outputs.VERSION }}\]?/{flag=1; next} /^## \[?[0-9]/{flag=0} flag" CHANGELOG.md > release_notes.txt
+        else
+          # Generate basic release notes
+          echo "## Release Notes" > release_notes.txt
+          echo "" >> release_notes.txt
+          echo "SaveEye ${{ steps.version.outputs.VERSION }} released" >> release_notes.txt
+          echo "" >> release_notes.txt
+          echo "### Installation" >> release_notes.txt
+          echo "" >> release_notes.txt
+          echo "**Install via Homebrew:**" >> release_notes.txt
+          echo '```bash' >> release_notes.txt
+          echo "brew tap samzong/tap" >> release_notes.txt
+          echo "brew install saveeye" >> release_notes.txt
+          echo '```' >> release_notes.txt
+          echo "" >> release_notes.txt
+          echo "**Install manually:**" >> release_notes.txt
+          echo "Download the corresponding DMG file and install it." >> release_notes.txt
+        fi
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ steps.version.outputs.VERSION }}
+        name: SaveEye v${{ steps.version.outputs.VERSION }}
+        body_path: release_notes.txt
+        files: |
+          build/Release/SaveEye-${{ steps.version.outputs.VERSION }}-arm64.dmg
+          build/Release/SaveEye-${{ steps.version.outputs.VERSION }}-x86_64.dmg
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Update latest tag
+      run: |
+        git tag -f latest
+        git push -f origin latest
+        
+    - name: Trigger Homebrew update
+      if: success()
+      uses: peter-evans/repository-dispatch@v2
+      with:
+        token: ${{ secrets.GH_PAT }}
+        repository: samzong/SaveEye
+        event-type: update-homebrew
+        client-payload: '{"version": "${{ steps.version.outputs.VERSION }}"}'
