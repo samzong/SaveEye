@@ -144,7 +144,11 @@ update-homebrew:
 	echo "X86_64 SHA256: $$X86_64_SHA"; \
 	TEMP_DIR=$$(mktemp -d); \
 	cd "$$TEMP_DIR"; \
-	git clone https://github.com/$(GITHUB_USER)/$(HOMEBREW_TAP_REPO).git; \
+	if [ -n "$(GITHUB_TOKEN)" ]; then \
+		git clone https://$(GITHUB_TOKEN)@github.com/$(GITHUB_USER)/$(HOMEBREW_TAP_REPO).git; \
+	else \
+		git clone https://github.com/$(GITHUB_USER)/$(HOMEBREW_TAP_REPO).git; \
+	fi; \
 	cd $(HOMEBREW_TAP_REPO); \
 	sed -i '' "s/version \".*\"/version \"$(VERSION)\"/" Casks/saveeye.rb; \
 	sed -i '' "s|arm:.*|arm:   \"$$ARM64_SHA\"|" Casks/saveeye.rb; \
