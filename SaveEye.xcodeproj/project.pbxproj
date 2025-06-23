@@ -24,6 +24,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		17332C572E0919F8008E3CCA /* SaveEye.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = SaveEye.xcodeproj; sourceTree = "<group>"; };
 		177C99B52DFFBFED0097CFA0 /* SaveEye.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SaveEye.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		177C99C32DFFBFEE0097CFA0 /* SaveEyeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaveEyeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		177C99CD2DFFBFEE0097CFA0 /* SaveEyeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaveEyeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,6 +87,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		17332C582E0919F8008E3CCA /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
 		177C99AC2DFFBFED0097CFA0 = {
 			isa = PBXGroup;
 			children = (
@@ -218,6 +224,10 @@
 			productRefGroup = 177C99B62DFFBFED0097CFA0 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
+				{
+					ProductGroup = 17332C582E0919F8008E3CCA /* Products */;
+					ProjectRef = 17332C572E0919F8008E3CCA /* SaveEye.xcodeproj */;
+				},
 				{
 					ProductGroup = 177C9A8B2E00635B0097CFA0 /* Products */;
 					ProjectRef = 177C9A8A2E00635B0097CFA0 /* SaveEye.xcodeproj */;
@@ -436,7 +446,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.seimo.SaveEye;
+				PRODUCT_BUNDLE_IDENTIFIER = com.samzong.SaveEye;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -466,7 +476,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.seimo.SaveEye;
+				PRODUCT_BUNDLE_IDENTIFIER = com.samzong.SaveEye;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -484,7 +494,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.seimo.SaveEyeTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.samzong.SaveEyeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -502,7 +512,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.seimo.SaveEyeTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.samzong.SaveEyeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -518,7 +528,7 @@
 				DEVELOPMENT_TEAM = DUPETW8BMH;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.seimo.SaveEyeUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.samzong.SaveEyeUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -534,7 +544,7 @@
 				DEVELOPMENT_TEAM = DUPETW8BMH;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.seimo.SaveEyeUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.samzong.SaveEyeUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;

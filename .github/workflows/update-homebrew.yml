@@ -42,4 +42,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         VERSION: ${{ steps.version.outputs.VERSION }}
       run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
         make update-homebrew VERSION=$VERSION
