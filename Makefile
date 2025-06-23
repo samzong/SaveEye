@@ -21,6 +21,16 @@ GITHUB_USER = samzong
 GITHUB_REPO = SaveEye
 HOMEBREW_TAP_REPO = homebrew-tap
 
+# 版本信息
+GIT_COMMIT = $(shell git rev-parse --short HEAD)
+VERSION ?= $(if $(CI_BUILD),$(shell git describe --tags --always),Dev-$(shell git rev-parse --short HEAD))
+CLEAN_VERSION = $(shell echo $(VERSION) | sed 's/^v//')
+
+# Homebrew 相关变量
+HOMEBREW_TAP_REPO = homebrew-tap
+CASK_FILE = Casks/saveeye.rb
+BRANCH_NAME = update-saveeye-$(CLEAN_VERSION)
+
 # 构建应用
 build:
 	@echo "🔨 构建 $(PROJECT_NAME) 应用..."
