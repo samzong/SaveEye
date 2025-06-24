@@ -16,6 +16,7 @@ class EyeCareTimer: ObservableObject {
     private let inactivityThreshold: TimeInterval = 30
     private let longInactivityThreshold: TimeInterval = 300 // 5分钟
     private var wasInactive = false
+    private var isDelaying = false
 
     init(settings: Settings, activityMonitor: ActivityMonitor) {
         self.settings = settings
@@ -46,6 +47,7 @@ class EyeCareTimer: ObservableObject {
         isActive = true
         workDuration = 0
         wasInactive = false
+        isDelaying = false
         updateTimerInterval()
         shouldShowEyeCare = false
 
@@ -65,6 +67,7 @@ class EyeCareTimer: ObservableObject {
         timeRemaining = 0
         shouldShowEyeCare = false
         wasInactive = false
+        isDelaying = false
     }
 
     func reset() {
@@ -73,15 +76,24 @@ class EyeCareTimer: ObservableObject {
         shouldShowEyeCare = false
         workDuration = 0
         wasInactive = false
+        isDelaying = false
         updateTimerInterval()
     }
 
     func delayBreak(minutes: Int) {
         guard isActive else { return }
 
-        let delaySeconds = TimeInterval(minutes * 60)
-        timeRemaining += delaySeconds
         shouldShowEyeCare = false
+        isDelaying = true
+        
+        // 延迟指定时间后重新触发护眼窗口
+        DispatchQueue.main.asyncAfter(deadline: .now() + TimeInterval(minutes * 60)) {
+            // 只有在计时器仍然活跃时才触发
+            if self.isActive {
+                self.isDelaying = false
+                self.shouldShowEyeCare = true
+            }
+        }
     }
 
     func resumeFromElapsed(_ elapsedSeconds: TimeInterval) {
@@ -125,7 +137,7 @@ class EyeCareTimer: ObservableObject {
             workDuration += 1
             timeRemaining = max(0, TimeInterval(settings.breakIntervalMinutes * 60) - workDuration)
 
-            if timeRemaining <= 0 && !shouldShowEyeCare {
+            if timeRemaining <= 0 && !shouldShowEyeCare && !isDelaying {
                 shouldShowEyeCare = true
             }
         } else {
