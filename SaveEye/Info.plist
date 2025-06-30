@@ -11,5 +11,7 @@
   需要辅助功能权限来监控您的屏幕使用模式，提供个性化的护眼提醒。所有数据仅在本地处理。</string>
 	<key>SMLoginItemEnabled</key>
 	<true/>
+	<key>LSUIElement</key>
+	<true/>
 </dict>
 </plist>
