@@ -1,52 +1,74 @@
 # SaveEye
 
-一个极简的 macOS 护眼提醒应用，帮助你养成健康的用眼习惯。
+<p align="center">
+  <img src="SaveEye/Resources/Assets.xcassets/Logo.imageset/logo.png" alt="SaveEye Logo" width="200">
+</p>
 
-## 功能特点
+<p align="center">
+  <b>A simple and efficient eye care reminder app for macOS</b>
+</p>
 
-- **定时提醒** - 每隔一段时间提醒你休息眼睛
-- **全屏护眼** - 休息时全屏显示护眼界面，强制休息
-- **智能检测** - 自动监测键盘鼠标活动，无活动时暂停计时
-- **个性设置** - 可自定义工作时长、休息时长等参数
-- **极简体验** - 支持开机自启动，不占用 Dock 和菜单栏
-- **护眼设计** - 采用深色背景和柔和动画，减少视觉疲劳
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-macOS%2010.15%2B-brightgreen" alt="Platform">
+  <img src="https://img.shields.io/badge/Swift-6.1-orange" alt="Swift">
+  <img src="https://img.shields.io/badge/License-MIT-blue" alt="License">
+  <a href="https://deepwiki.com/samzong/SaveEye"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
+</p>
 
-## 安装方式
+[English](README.md) | [中文](README_zh.md)
 
-### 通过 Homebrew 安装（推荐）
+## Features
+
+- **Timed Reminders** - Reminds you to rest your eyes at regular intervals
+- **Full-Screen Eye Care** - Forces rest with a full-screen eye care interface during breaks
+- **Smart Detection** - Automatically monitors keyboard and mouse activity, pausing the timer when inactive
+- **Customizable Settings** - Configure work duration, break duration, and other parameters
+- **Minimalist Experience** - Supports auto-launch at startup without occupying Dock or menu bar space
+- **Eye-Friendly Design** - Uses dark backgrounds and smooth animations to reduce visual fatigue
+
+## Installation
+
+### Install via Homebrew (Recommended)
 
 ```bash
 brew tap samzong/tap
 brew install saveeye
 ```
 
-### 手动安装
+### Manual Installation
 
-1. 从 [Releases](https://github.com/samzong/SaveEye/releases) 页面下载对应架构的 DMG 文件
-2. 双击安装到 Applications 文件夹
+1. Download the DMG file for your architecture from the [Releases](https://github.com/samzong/SaveEye/releases) page
+2. Drag to Applications folder and run
 
-### 源码编译
+If you encounter the error `"SaveEye" is damaged and can't be opened. You should move it to the Trash.`, try the following:
+
+1. Open System Preferences -> Security & Privacy -> General -> Allow apps downloaded from
+2. Check "Anywhere"
+3. Run SaveEye again
+4. If it still doesn't work, try running `xattr -d com.apple.quarantine /Applications/SaveEye.app` in Terminal
+
+### Build from Source
 
 ```bash
-# 克隆项目
+# Clone the project
 git clone https://github.com/samzong/SaveEye.git
 cd SaveEye
 
-# 一键构建并安装
+# Build and install in one step
 make install-app
 ```
 
-### 使用说明
+### Usage Instructions
 
-1. 启动应用后，首次使用需要授予**辅助功能权限**
-2. 在配置窗口设置工作时长（默认 20 分钟）和休息时长（默认 20 秒）
-3. 点击"开始保护"即可开始护眼计时
-4. 到时间后会自动全屏显示休息提醒，按 ESC 键可退出
+1. After launching the app, you'll need to grant **Accessibility permissions** on first use
+2. Set work duration (default 20 minutes) and break duration (default 20 seconds) in the configuration window
+3. Click "Start Protection" to begin the eye care timer
+4. When time is up, a full-screen rest reminder will automatically appear. Press ESC to exit
 
-## 系统要求
+## System Requirements
 
 - macOS 15+
-- 需要辅助功能权限（用于监测用户活动）
+- Accessibility permissions required (for monitoring user activity)
 
 ## License
 
