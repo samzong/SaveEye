@@ -9,6 +9,7 @@ import Combine
 import Foundation
 import SwiftUI
 
+@MainActor
 class AppState: ObservableObject {
     @Published var showConfig = true
     @Published var isRunning = false

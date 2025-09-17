@@ -10,6 +10,7 @@ import Foundation
 import SwiftUI
 
 // 应用管理器 - 处理应用生命周期和窗口管理
+@MainActor
 class AppManager: ObservableObject {
     static let shared = AppManager()
 
@@ -72,6 +73,8 @@ class ConfigWindowDelegate: NSObject, NSWindowDelegate {
     }
 
     func windowWillClose(_: Notification) {
-        appManager?.hideConfigWindow()
+        Task { @MainActor in
+            appManager?.hideConfigWindow()
+        }
     }
 }
