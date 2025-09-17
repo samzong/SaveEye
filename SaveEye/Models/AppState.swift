@@ -287,9 +287,7 @@ class AppState: ObservableObject {
     // 安全地设置应用呈现选项
     private func setAppPresentationOptions(_ options: NSApplication.PresentationOptions) {
         DispatchQueue.main.async {
-            do {
-                NSApp.presentationOptions = options
-            } catch {}
+            NSApp.presentationOptions = options
         }
     }
 
