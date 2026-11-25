@@ -6,7 +6,7 @@ SCHEME = SaveEye
 CONFIGURATION = Release
 BUILD_DIR = build
 DERIVED_DATA_PATH = $(BUILD_DIR)/DerivedData
-VERSION = $(shell git describe --tags --abbrev=0 2>/dev/null || echo "1.0.0")
+VERSION = $(shell /usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' SaveEye/Info.plist)
 
 # 应用路径
 APP_NAME = $(PROJECT_NAME)
@@ -15,21 +15,6 @@ INSTALL_PATH = /Applications/$(APP_NAME)
 DIST_ZIP = $(BUILD_DIR)/$(CONFIGURATION)/$(PROJECT_NAME)-unsigned.zip
 DMG_DIR = $(BUILD_DIR)/dmg
 DMG_PATH = $(BUILD_DIR)/$(CONFIGURATION)/$(PROJECT_NAME)-$(VERSION)
-
-# GitHub 仓库信息
-GITHUB_USER = samzong
-GITHUB_REPO = SaveEye
-HOMEBREW_TAP_REPO = homebrew-tap
-
-# 版本信息
-GIT_COMMIT = $(shell git rev-parse --short HEAD)
-VERSION ?= $(if $(CI_BUILD),$(shell git describe --tags --always),Dev-$(shell git rev-parse --short HEAD))
-CLEAN_VERSION = $(shell echo $(VERSION) | sed 's/^v//')
-
-# Homebrew 相关变量
-HOMEBREW_TAP_REPO = homebrew-tap
-CASK_FILE = Casks/saveeye.rb
-BRANCH_NAME = update-saveeye-$(CLEAN_VERSION)
 
 # 构建应用
 build:
@@ -89,16 +74,13 @@ install-app: build
 		exit 1; \
 	fi
 
-# 更新版本号
 version:
-	@if [ -z "$(VERSION)" ]; then \
-		echo "❌ 请指定版本号: make version VERSION=1.1.0"; \
-		exit 1; \
-	fi
-	@echo "📝 更新版本号到 $(VERSION)..."
+	@echo "$(VERSION)" | grep -Eq '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$$' || { echo "VERSION must use X.Y.Z without leading zeros."; exit 1; }
+	@echo "Set the release core to $(VERSION)."
+	@/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(VERSION)" SaveEye/Info.plist
 	@sed -i '' 's/MARKETING_VERSION = [^;]*/MARKETING_VERSION = $(VERSION)/g' SaveEye.xcodeproj/project.pbxproj
-	@echo "✅ 版本号已更新到 $(VERSION)"
-	@echo "💡 请运行 'make build' 重新构建应用"
+	@echo "Release core: $(VERSION)"
+	@echo "Run make build to rebuild the application."
 
 # 清理构建文件
 clean:
@@ -134,108 +116,6 @@ dmg-unsigned: build-unsigned
 	@echo "✅ DMG 创建完成！"
 	@echo "📍 arm64 DMG: $(DMG_PATH)-arm64.dmg"
 
-# 更新 Homebrew Cask
-update-homebrew:
-	@echo "==> 开始 Homebrew cask 更新流程..."
-	@if [ -z "$(GH_PAT)" ]; then \
-		echo "❌ 错误: 需要设置 GH_PAT 环境变量"; \
-		exit 1; \
-	fi
-
-	@echo "==> 当前版本信息:"
-	@echo "    - VERSION: $(VERSION)"
-	@echo "    - CLEAN_VERSION: $(CLEAN_VERSION)"
-
-	@echo "==> 准备工作目录..."
-	@rm -rf tmp && mkdir -p tmp
-	
-	@echo "==> 下载 DMG 文件..."
-	@curl -L -o tmp/$(APP_NAME)-arm64.dmg "https://github.com/samzong/$(APP_NAME)/releases/download/v$(CLEAN_VERSION)/$(APP_NAME)-$(CLEAN_VERSION)-arm64.dmg"
-	
-	@echo "==> 计算 SHA256 校验和..."
-	@ARM64_SHA256=$$(shasum -a 256 tmp/$(APP_NAME)-arm64.dmg | cut -d ' ' -f 1) && echo "    - arm64 SHA256: $$ARM64_SHA256"
-	
-	@echo "==> 克隆 Homebrew tap 仓库..."
-	@cd tmp && git clone https://$(GH_PAT)@github.com/samzong/$(HOMEBREW_TAP_REPO).git
-	@cd tmp/$(HOMEBREW_TAP_REPO) && echo "    - 创建新分支: $(BRANCH_NAME)" && git checkout -b $(BRANCH_NAME)
-
-	@echo "==> 更新 cask 文件..."
-	@ARM64_SHA256=$$(shasum -a 256 tmp/$(APP_NAME)-arm64.dmg | cut -d ' ' -f 1) && \
-	echo "==> 再次确认SHA256: arm64=$$ARM64_SHA256" && \
-	cd tmp/$(HOMEBREW_TAP_REPO) && \
-	echo "==> 当前目录: $$(pwd)" && \
-	echo "==> CASK_FILE路径: $(CASK_FILE)" && \
-	if [ -f $(CASK_FILE) ]; then \
-		echo "    - 发现现有cask文件，使用sed更新..."; \
-		echo "    - cask文件内容 (更新前):"; \
-		cat $(CASK_FILE); \
-		sed -i '' "s/version \\\".*\\\"/version \\\"$(CLEAN_VERSION)\\\"/g" $(CASK_FILE); \
-		echo "    - 更新版本后的cask文件:"; \
-		cat $(CASK_FILE); \
-		if grep -q "on_arm" $(CASK_FILE); then \
-			echo "    - 更新ARM架构SHA256..."; \
-			sed -i '' "/on_arm/,/on_intel/ s/sha256 \\\".*\\\"/sha256 \\\"$$ARM64_SHA256\\\"/g" $(CASK_FILE); \
-			echo "    - 更新Intel架构SHA256..."; \
-			sed -i '' "/on_intel/,/end/ s/sha256 \\\".*\\\"/sha256 \\\"$$X86_64_SHA256\\\"/g" $(CASK_FILE); \
-			echo "    - 更新ARM下载URL..."; \
-			sed -i '' "s|url \\\".*v#{version}/.*-ARM64.dmg\\\"|url \\\"https://github.com/samzong/$(APP_NAME)/releases/download/v#{version}/$(APP_NAME)-$(CLEAN_VERSION)-arm64.dmg\\\"|g" $(CASK_FILE); \
-			echo "    - 最终cask文件内容:"; \
-			cat $(CASK_FILE); \
-		else \
-			echo "❌ 未知的 cask 格式，无法更新 SHA256 值"; \
-			exit 1; \
-		fi; \
-	else \
-		echo "    - 未找到cask文件，创建新文件..."; \
-		mkdir -p $$(dirname $(CASK_FILE)); \
-		echo "    - 使用文本方式创建cask文件..."; \
-		echo 'cask "saveeye" do' > $(CASK_FILE); \
-		echo '  version "$(CLEAN_VERSION)"' >> $(CASK_FILE); \
-		echo '' >> $(CASK_FILE); \
-		echo '  if Hardware::CPU.arm?' >> $(CASK_FILE); \
-		echo '    url "https://github.com/samzong/$(APP_NAME)/releases/download/v#{version}/$(APP_NAME)-arm64.dmg"' >> $(CASK_FILE); \
-		echo '    sha256 "'$$ARM64_SHA256'"' >> $(CASK_FILE); \
-		echo '  else' >> $(CASK_FILE); \
-		echo '  end' >> $(CASK_FILE); \
-		echo '' >> $(CASK_FILE); \
-		echo '  name "$(APP_NAME)"' >> $(CASK_FILE); \
-		echo '  desc "配置文件管理工具"' >> $(CASK_FILE); \
-		echo '  homepage "https://github.com/samzong/$(APP_NAME)"' >> $(CASK_FILE); \
-		echo '' >> $(CASK_FILE); \
-		echo '  app "$(APP_NAME).app"' >> $(CASK_FILE); \
-		echo 'end' >> $(CASK_FILE); \
-		echo "    - 检查创建的cask文件:"; \
-		cat $(CASK_FILE) || echo "❌ 无法读取cask文件"; \
-	fi
-	
-	@echo "==> 检查更改..."
-	@cd tmp/$(HOMEBREW_TAP_REPO) && \
-	if ! git diff --quiet $(CASK_FILE); then \
-		echo "    - 检测到更改，创建 pull request..."; \
-		git add $(CASK_FILE); \
-		git config user.name "GitHub Actions"; \
-		git config user.email "actions@github.com"; \
-		git commit -m "chore: update $(APP_NAME) to v$(CLEAN_VERSION)"; \
-		git push -u origin $(BRANCH_NAME); \
-		echo "    - 准备创建PR数据..."; \
-		pr_data=$$(printf '{\"title\":\"chore: update %s to v%s\",\"body\":\"Auto-generated PR\\\\n- Version: %s\\\\n- x86_64 SHA256: %s\\\\n- arm64 SHA256: %s\",\"head\":\"%s\",\"base\":\"main\"}' \
-			"$(APP_NAME)" "$(CLEAN_VERSION)" "$(CLEAN_VERSION)" "$$X86_64_SHA256" "$$ARM64_SHA256" "$(BRANCH_NAME)"); \
-		echo "    - PR数据: $$pr_data"; \
-		curl -X POST \
-			-H "Authorization: token $(GH_PAT)" \
-			-H "Content-Type: application/json" \
-			https://api.github.com/repos/samzong/$(HOMEBREW_TAP_REPO)/pulls \
-			-d "$$pr_data"; \
-		echo "✅ Pull request 创建成功"; \
-	else \
-		echo "❌ cask 文件中没有检测到更改"; \
-		exit 1; \
-	fi
-
-	@echo "==> 清理临时文件..."
-	@rm -rf tmp
-	@echo "✅ Homebrew cask 更新流程完成"
-
 # 显示帮助信息
 help:
 	@echo "SaveEye 构建工具使用说明："
@@ -246,7 +126,6 @@ help:
 	@echo "  make install-app     - 构建并安装应用到 /Applications"
 	@echo "  make dmg             - 创建 arm64 DMG 安装包 (开发者签名版本)"
 	@echo "  make dmg-unsigned    - 创建 arm64 DMG 安装包 (无签名版本，用于发布)"
-	@echo "  make update-homebrew - 更新 Homebrew Cask (暂时不可用)"
 	@echo "  make version         - 更新版本号 (需要 VERSION 参数)"
 	@echo "  make clean           - 清理构建文件"
 	@echo "  make help            - 显示此帮助信息"
@@ -263,6 +142,6 @@ help:
 	@echo "  make version VERSION=1.1.0 # 更新版本号"
 
 # 声明伪目标
-.PHONY: build build-unsigned install-app dmg dmg-unsigned update-homebrew version clean help
+.PHONY: build build-unsigned install-app dmg dmg-unsigned version clean help
 
 .DEFAULT_GOAL := help

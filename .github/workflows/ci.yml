@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify tracked release version
+        id: version
+        run: |
+          version=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' SaveEye/Info.plist)
+          python3 .github/scripts/check-release-tag.py "v$version"
+
+      - name: Build and test
+        run: |
+          xcodebuild test -scheme SaveEye -destination 'platform=macOS' \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+
+      - name: Build packages
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: make dmg-unsigned VERSION="$VERSION"
+
+      - name: Verify package
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          CORE: ${{ steps.version.outputs.core }}
+          BUILD: ${{ steps.version.outputs.build }}
+        run: bash .github/scripts/verify-package.sh "$VERSION" "$CORE" "$BUILD"
