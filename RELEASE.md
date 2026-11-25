@@ -1,97 +1,65 @@
-# SaveEye 发布指南
+# SaveEye releases
 
-本文档说明如何发布 SaveEye 的新版本。
+SaveEye is an L1 desktop tool. Published versions and tags are immutable.
+Use `X.Y.Z` for release cores and `vX.Y.Z` for stable tags.
+Use `vX.Y.Z-alpha.N`, `vX.Y.Z-beta.N`, or `vX.Y.Z-rc.N` for prerelease tags.
+Start new prerelease sequences at 1. Use no leading zeros.
+The release gate also accepts sequence 0 under the repository's tag syntax contract.
 
-## 准备发布
+`SaveEye/Info.plist` contains the release core in `CFBundleShortVersionString`.
+The application target must use the same `MARKETING_VERSION` in every Xcode build configuration.
+`CFBundleVersion` expands the tracked `CURRENT_PROJECT_VERSION` from the Xcode project.
+Prerelease suffixes appear in tags and DMG filenames. Application version fields contain the release core.
 
-### 1. 更新版本号
-```bash
-make version VERSION=1.1.0
-```
+## Prepare a release
 
-### 2. 更新 CHANGELOG.md
-在 `CHANGELOG.md` 中添加新版本的更新内容，包括：
-- Added: 新增功能
-- Changed: 功能改进
-- Fixed: Bug 修复
-- Removed: 移除的功能
+1. Set the release core from the repository root:
 
-### 3. 提交更改
-```bash
-git add .
-git commit -m "chore: prepare release v1.1.0"
-git push origin main
-```
+   ```sh
+   make version VERSION=1.2.0
+   ```
 
-## 发布流程
+   This command updates `Info.plist` and the Xcode marketing versions together.
+2. Increase `CURRENT_PROJECT_VERSION` in both application build configurations before each publication, including prereleases.
+3. Update `CHANGELOG.md` before tagging. Install `git-cliff` with Homebrew, then generate the new section:
 
-### 自动发布（推荐）
+   ```sh
+   git cliff --unreleased --tag v1.2.0 --prepend CHANGELOG.md
+   ```
 
-1. 创建并推送 Git 标签：
-```bash
-git tag v1.1.0
-git push origin v1.1.0
-```
+4. Review the generated section. Use the full prerelease version in its heading when preparing a prerelease.
+5. Run the version gate, build, tests, and package checks on a Mac with Xcode:
 
-2. GitHub Actions 会自动：
-   - 构建 DMG 安装包
-   - 创建 GitHub Release
-   - 上传安装包到 Release
-   - 触发 Homebrew Cask 更新
+   ```sh
+   python3 .github/scripts/check-release-tag.py v1.2.0
+   xcodebuild test -scheme SaveEye -destination 'platform=macOS' -derivedDataPath build/DerivedData CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+   make dmg-unsigned VERSION=1.2.0
+   bash .github/scripts/verify-package.sh 1.2.0 1.2.0 2
+   python3 .github/scripts/release-notes.py 1.2.0 build/release-notes.txt
+   ```
 
-### 手动发布
+   Replace `2` with the tracked build number. All commands must succeed, and release notes must contain text.
+6. Submit the changes through a PR and wait for the macOS CI checks before merging.
 
-如果需要手动操作：
+## Publish after owner authorization
 
-1. 构建 DMG：
-```bash
-make dmg VERSION=1.1.0
-```
+After the owner authorizes publication, create a new tag at the reviewed release commit and push that tag.
+Never move, rename, delete, or reuse a published tag, including the historical `v1` tag.
+A tag push starts the release workflow. The first check after checkout rejects invalid tags and version drift before Xcode runs.
 
-2. 手动创建 GitHub Release 并上传 DMG 文件
+The workflow tests the app, builds an unsigned arm64 DMG, and verifies its integrity, architecture, and application versions.
+It extracts the exact version section from `CHANGELOG.md`.
+If that section is missing or blank, it writes the release version and a DMG installation instruction.
+The workflow uploads `SaveEye-{version}-arm64.dmg` to GitHub Releases.
+Prerelease tags set `prerelease: true` and `make_latest: false`.
 
-3. 更新 Homebrew Cask：
-```bash
-make update-homebrew VERSION=1.1.0
-```
+After publication, inspect the release version, notes, prerelease flag, and downloadable DMG.
+Live publication is separate from PR validation. PR validation does not publish a GitHub Release.
+Homebrew updates belong to the centralized `samzong/homebrew-tap` scan.
+This repository does not push changes or dispatch updates to the tap.
 
-## 验证发布
+## Validation limits
 
-### 检查 GitHub Release
-- 确认 Release 页面包含正确的版本号和发布说明
-- 验证 DMG 文件可以正常下载
-
-### 测试 Homebrew 安装
-```bash
-brew tap samzong/tap
-brew install saveeye
-```
-
-### 测试应用功能
-- 启动应用
-- 验证核心功能正常
-- 检查版本号是否正确
-
-## 故障排除
-
-### GitHub Actions 失败
-- 检查 Xcode 版本兼容性
-- 验证代码签名设置
-- 查看 Actions 日志定位问题
-
-### Homebrew 更新失败
-- 检查 DMG 文件 URL 是否正确
-- 验证 SHA256 校验值
-- 确认 PERSONAL_ACCESS_TOKEN 权限
-
-### DMG 创建失败
-- 检查 build 目录权限
-- 验证应用签名状态
-- 确认 hdiutil 命令可用
-
-## 注意事项
-
-1. **版本号格式**：使用语义化版本号 (vX.Y.Z)
-2. **代码签名**：确保应用已正确签名
-3. **权限设置**：需要 GitHub PERSONAL_ACCESS_TOKEN
-4. **测试验证**：发布前进行充分测试
+CI runs the existing Xcode test targets. Their current coverage includes launch checks and an empty unit test example.
+A green run proves build, test execution, and package checks. It does not prove all eye-care behavior.
+Local release checks require Xcode. A Command Line Tools installation alone cannot build or test the application.
